@@ -266,6 +266,275 @@ export type Database = {
           },
         ]
       }
+      hub_agent_definitions: {
+        Row: {
+          authorized_tools: Json
+          catalog_status: Database["public"]["Enums"]["hub_catalog_status"]
+          configuration_schema: Json
+          created_at: string
+          description: string
+          estimated_cost: Json
+          id: string
+          identifier: string
+          model_policy: Json
+          name: string
+          permissions: Json
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          authorized_tools?: Json
+          catalog_status?: Database["public"]["Enums"]["hub_catalog_status"]
+          configuration_schema?: Json
+          created_at?: string
+          description: string
+          estimated_cost?: Json
+          id?: string
+          identifier: string
+          model_policy?: Json
+          name: string
+          permissions?: Json
+          updated_at?: string
+          version: string
+        }
+        Update: {
+          authorized_tools?: Json
+          catalog_status?: Database["public"]["Enums"]["hub_catalog_status"]
+          configuration_schema?: Json
+          created_at?: string
+          description?: string
+          estimated_cost?: Json
+          id?: string
+          identifier?: string
+          model_policy?: Json
+          name?: string
+          permissions?: Json
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      hub_event_definitions: {
+        Row: {
+          created_at: string
+          description: string
+          event_name: string
+          id: string
+          payload_schema: Json
+          source_identifier: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          event_name: string
+          id?: string
+          payload_schema?: Json
+          source_identifier: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          event_name?: string
+          id?: string
+          payload_schema?: Json
+          source_identifier?: string
+        }
+        Relationships: []
+      }
+      hub_event_log: {
+        Row: {
+          correlation_id: string
+          created_at: string
+          created_by: string
+          event_kind: Database["public"]["Enums"]["hub_event_kind"]
+          id: string
+          metadata: Json
+          organization_id: string
+          subject_identifier: string
+        }
+        Insert: {
+          correlation_id: string
+          created_at?: string
+          created_by: string
+          event_kind: Database["public"]["Enums"]["hub_event_kind"]
+          id?: string
+          metadata?: Json
+          organization_id: string
+          subject_identifier: string
+        }
+        Update: {
+          correlation_id?: string
+          created_at?: string
+          created_by?: string
+          event_kind?: Database["public"]["Enums"]["hub_event_kind"]
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          subject_identifier?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hub_event_log_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hub_integration_definitions: {
+        Row: {
+          catalog_status: Database["public"]["Enums"]["hub_catalog_status"]
+          configuration_schema: Json
+          created_at: string
+          description: string
+          id: string
+          identifier: string
+          name: string
+          permissions: Json
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          catalog_status?: Database["public"]["Enums"]["hub_catalog_status"]
+          configuration_schema?: Json
+          created_at?: string
+          description: string
+          id?: string
+          identifier: string
+          name: string
+          permissions?: Json
+          updated_at?: string
+          version: string
+        }
+        Update: {
+          catalog_status?: Database["public"]["Enums"]["hub_catalog_status"]
+          configuration_schema?: Json
+          created_at?: string
+          description?: string
+          id?: string
+          identifier?: string
+          name?: string
+          permissions?: Json
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      hub_module_definitions: {
+        Row: {
+          author: string
+          catalog_status: Database["public"]["Enums"]["hub_catalog_status"]
+          category: string
+          compatibility: Json
+          configuration_schema: Json
+          created_at: string
+          dependencies: Json
+          description: string
+          icon: string
+          id: string
+          identifier: string
+          manifest: Json
+          name: string
+          permissions: Json
+          updated_at: string
+          version: string
+          visibility: string
+        }
+        Insert: {
+          author?: string
+          catalog_status?: Database["public"]["Enums"]["hub_catalog_status"]
+          category: string
+          compatibility?: Json
+          configuration_schema?: Json
+          created_at?: string
+          dependencies?: Json
+          description: string
+          icon: string
+          id?: string
+          identifier: string
+          manifest?: Json
+          name: string
+          permissions?: Json
+          updated_at?: string
+          version: string
+          visibility?: string
+        }
+        Update: {
+          author?: string
+          catalog_status?: Database["public"]["Enums"]["hub_catalog_status"]
+          category?: string
+          compatibility?: Json
+          configuration_schema?: Json
+          created_at?: string
+          dependencies?: Json
+          description?: string
+          icon?: string
+          id?: string
+          identifier?: string
+          manifest?: Json
+          name?: string
+          permissions?: Json
+          updated_at?: string
+          version?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
+      hub_pack_definitions: {
+        Row: {
+          automation_templates: Json
+          catalog_status: Database["public"]["Enums"]["hub_catalog_status"]
+          code: string
+          content_templates: Json
+          created_at: string
+          dashboard_definition: Json
+          default_settings: Json
+          description: string
+          id: string
+          module_identifiers: Json
+          name: string
+          pipelines: Json
+          recommended_agents: Json
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          automation_templates?: Json
+          catalog_status?: Database["public"]["Enums"]["hub_catalog_status"]
+          code: string
+          content_templates?: Json
+          created_at?: string
+          dashboard_definition?: Json
+          default_settings?: Json
+          description: string
+          id?: string
+          module_identifiers?: Json
+          name: string
+          pipelines?: Json
+          recommended_agents?: Json
+          updated_at?: string
+          version: string
+        }
+        Update: {
+          automation_templates?: Json
+          catalog_status?: Database["public"]["Enums"]["hub_catalog_status"]
+          code?: string
+          content_templates?: Json
+          created_at?: string
+          dashboard_definition?: Json
+          default_settings?: Json
+          description?: string
+          id?: string
+          module_identifiers?: Json
+          name?: string
+          pipelines?: Json
+          recommended_agents?: Json
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
       intake_messages: {
         Row: {
           content: string
@@ -388,6 +657,198 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "service_requests"
             referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      organization_hub_agents: {
+        Row: {
+          agent_definition_id: string
+          configuration: Json
+          id: string
+          installed_at: string
+          installed_by: string
+          organization_id: string
+          status: Database["public"]["Enums"]["hub_installation_status"]
+          updated_at: string
+        }
+        Insert: {
+          agent_definition_id: string
+          configuration?: Json
+          id?: string
+          installed_at?: string
+          installed_by: string
+          organization_id: string
+          status?: Database["public"]["Enums"]["hub_installation_status"]
+          updated_at?: string
+        }
+        Update: {
+          agent_definition_id?: string
+          configuration?: Json
+          id?: string
+          installed_at?: string
+          installed_by?: string
+          organization_id?: string
+          status?: Database["public"]["Enums"]["hub_installation_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_hub_agents_agent_definition_id_fkey"
+            columns: ["agent_definition_id"]
+            isOneToOne: false
+            referencedRelation: "hub_agent_definitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_hub_agents_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_hub_integrations: {
+        Row: {
+          configuration: Json
+          id: string
+          integration_definition_id: string
+          last_error_code: string | null
+          last_synchronized_at: string | null
+          organization_id: string
+          status: Database["public"]["Enums"]["hub_integration_status"]
+          updated_at: string
+          updated_by: string
+        }
+        Insert: {
+          configuration?: Json
+          id?: string
+          integration_definition_id: string
+          last_error_code?: string | null
+          last_synchronized_at?: string | null
+          organization_id: string
+          status?: Database["public"]["Enums"]["hub_integration_status"]
+          updated_at?: string
+          updated_by: string
+        }
+        Update: {
+          configuration?: Json
+          id?: string
+          integration_definition_id?: string
+          last_error_code?: string | null
+          last_synchronized_at?: string | null
+          organization_id?: string
+          status?: Database["public"]["Enums"]["hub_integration_status"]
+          updated_at?: string
+          updated_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_hub_integrations_integration_definition_id_fkey"
+            columns: ["integration_definition_id"]
+            isOneToOne: false
+            referencedRelation: "hub_integration_definitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_hub_integrations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_hub_modules: {
+        Row: {
+          configuration: Json
+          id: string
+          installed_at: string
+          installed_by: string
+          module_definition_id: string
+          organization_id: string
+          status: Database["public"]["Enums"]["hub_installation_status"]
+          updated_at: string
+        }
+        Insert: {
+          configuration?: Json
+          id?: string
+          installed_at?: string
+          installed_by: string
+          module_definition_id: string
+          organization_id: string
+          status?: Database["public"]["Enums"]["hub_installation_status"]
+          updated_at?: string
+        }
+        Update: {
+          configuration?: Json
+          id?: string
+          installed_at?: string
+          installed_by?: string
+          module_definition_id?: string
+          organization_id?: string
+          status?: Database["public"]["Enums"]["hub_installation_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_hub_modules_module_definition_id_fkey"
+            columns: ["module_definition_id"]
+            isOneToOne: false
+            referencedRelation: "hub_module_definitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_hub_modules_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_hub_packs: {
+        Row: {
+          applied_at: string
+          applied_by: string
+          id: string
+          migration_note: string
+          organization_id: string
+          pack_definition_id: string
+          status: string
+        }
+        Insert: {
+          applied_at?: string
+          applied_by: string
+          id?: string
+          migration_note?: string
+          organization_id: string
+          pack_definition_id: string
+          status: string
+        }
+        Update: {
+          applied_at?: string
+          applied_by?: string
+          id?: string
+          migration_note?: string
+          organization_id?: string
+          pack_definition_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_hub_packs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_hub_packs_pack_definition_id_fkey"
+            columns: ["pack_definition_id"]
+            isOneToOne: false
+            referencedRelation: "hub_pack_definitions"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1124,6 +1585,10 @@ export type Database = {
         }
         Returns: string
       }
+      apply_hub_pack: {
+        Args: { requested_pack_code: string; target_organization_id: string }
+        Returns: undefined
+      }
       assign_service_request: {
         Args: {
           expected_version: number
@@ -1275,6 +1740,33 @@ export type Database = {
           total_count: number
           updated_at: string
         }[]
+      }
+      manage_hub_agent: {
+        Args: {
+          requested_action: string
+          requested_configuration?: Json
+          requested_identifier: string
+          target_organization_id: string
+        }
+        Returns: undefined
+      }
+      manage_hub_integration: {
+        Args: {
+          requested_action: string
+          requested_configuration?: Json
+          requested_identifier: string
+          target_organization_id: string
+        }
+        Returns: undefined
+      }
+      manage_hub_module: {
+        Args: {
+          requested_action: string
+          requested_configuration?: Json
+          requested_identifier: string
+          target_organization_id: string
+        }
+        Returns: undefined
       }
       publish_playbook_version: {
         Args: { target_organization_id: string; target_version_id: string }
@@ -1440,6 +1932,23 @@ export type Database = {
         | "country"
         | "city"
         | "postal_code"
+      hub_catalog_status: "available" | "planned" | "deprecated"
+      hub_event_kind:
+        | "module.installed"
+        | "module.activated"
+        | "module.disabled"
+        | "module.removed"
+        | "pack.applied"
+        | "agent.enabled"
+        | "agent.disabled"
+        | "integration.configured"
+        | "integration.disabled"
+      hub_installation_status: "installed" | "active" | "disabled" | "removed"
+      hub_integration_status:
+        | "not_connected"
+        | "configured"
+        | "disabled"
+        | "error"
       intake_message_role: "user" | "assistant" | "system_event"
       intake_session_status: "active" | "paused" | "completed" | "cancelled"
       organization_invitation_status:
@@ -1649,6 +2158,25 @@ export const Constants = {
         "country",
         "city",
         "postal_code",
+      ],
+      hub_catalog_status: ["available", "planned", "deprecated"],
+      hub_event_kind: [
+        "module.installed",
+        "module.activated",
+        "module.disabled",
+        "module.removed",
+        "pack.applied",
+        "agent.enabled",
+        "agent.disabled",
+        "integration.configured",
+        "integration.disabled",
+      ],
+      hub_installation_status: ["installed", "active", "disabled", "removed"],
+      hub_integration_status: [
+        "not_connected",
+        "configured",
+        "disabled",
+        "error",
       ],
       intake_message_role: ["user", "assistant", "system_event"],
       intake_session_status: ["active", "paused", "completed", "cancelled"],

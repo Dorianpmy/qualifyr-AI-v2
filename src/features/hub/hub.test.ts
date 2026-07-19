@@ -1,0 +1,3 @@
+import {describe,expect,it} from "vitest";
+import {hubActionSchema,parseHubConfiguration} from "@/features/hub/schemas";
+describe("Hub schemas",()=>{it("accepts an internal module activation",()=>expect(hubActionSchema.safeParse({identifier:"ai-intake",action:"activate"}).success).toBe(true));it("rejects identifiers outside the manifest convention",()=>expect(hubActionSchema.safeParse({identifier:"../crm",action:"install"}).success).toBe(false));it("accepts only object configuration",()=>{expect(parseHubConfiguration('{"locale":"fr-FR"}')).toEqual({locale:"fr-FR"});expect(()=>parseHubConfiguration('[]')).toThrow();});});

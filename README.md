@@ -132,3 +132,8 @@ Le code de Qualifyr V1 n’était pas présent dans ce workspace. La direction p
 3. Configurer CI sur `npm run check`, le build et les tests Supabase.
 4. Ajouter OAuth, MFA et SSO uniquement dans leurs phases dédiées.
 5. Étendre les catalogues i18n lors de l’ouverture d’une nouvelle locale.
+# Qualifyr AI V2
+
+## Hub interne
+
+La couche Hub ajoute un registre tenant-scopé de modules, packs métier, agents et intégrations. Consultez [HUB.md](HUB.md) pour le modèle de sécurité, les limites intentionnelles et le diagramme de dépendances.
