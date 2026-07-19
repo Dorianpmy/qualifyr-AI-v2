@@ -1559,6 +1559,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_platform_admin_overview: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      is_platform_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       accept_organization_invitation: {
         Args: { raw_token: string }
         Returns: {

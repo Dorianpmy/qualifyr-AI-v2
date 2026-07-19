@@ -12,6 +12,7 @@ import {
   Menu,
   Plus,
   Settings2,
+  ShieldCheck,
   Users,
 } from "lucide-react";
 
@@ -36,6 +37,7 @@ type OrganizationShellProps = {
   children: React.ReactNode;
   organizations: OrganizationSummary[];
   current: OrganizationSummary;
+  isPlatformAdmin?: boolean;
 };
 
 const navigation = [
@@ -107,7 +109,7 @@ function AccountPanel({ current }: { current: OrganizationSummary }) {
   );
 }
 
-export function OrganizationShell({ children, organizations, current }: OrganizationShellProps) {
+export function OrganizationShell({ children, organizations, current, isPlatformAdmin = false }: OrganizationShellProps) {
   const pathname = usePathname();
 
   return (
@@ -125,6 +127,7 @@ export function OrganizationShell({ children, organizations, current }: Organiza
           <Navigation slug={current.slug} pathname={pathname} />
         </div>
         <div className="relative grid gap-2.5 border-t border-[var(--sidebar-border)] pt-4">
+          {isPlatformAdmin ? <Button asChild variant="glass" className="justify-start text-[var(--on-dark)]"><Link href="/admin"><ShieldCheck aria-hidden="true" />Administration SaaS</Link></Button> : null}
           <Button asChild variant="ghost" className="justify-start text-[var(--sidebar-muted)] hover:text-[var(--on-dark)]">
             <Link href="/app/onboarding"><Plus aria-hidden="true" />Créer une organisation</Link>
           </Button>

@@ -2,11 +2,14 @@ import { cn } from "@/lib/utils";
 
 export function BrandMark({ className }: { className?: string }) {
   return (
-    <span className={cn("grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] bg-[linear-gradient(145deg,var(--primary-hover),var(--primary-strong))] text-[var(--on-dark)] shadow-[var(--shadow-primary)]", className)} aria-hidden="true">
-      <svg viewBox="0 0 64 64" className="size-[1.95rem]" aria-hidden="true">
-        <circle cx="31" cy="31" r="18" fill="none" stroke="currentColor" strokeWidth="9" />
-        <path d="M41 42 52 53" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="7" />
-        <circle cx="48" cy="14" r="8" fill="var(--primary)" />
+    <span className={cn("grid size-10 shrink-0 place-items-center overflow-hidden rounded-[var(--radius-md)] shadow-[var(--shadow-primary)]", className)} aria-hidden="true">
+      <svg viewBox="0 0 64 64" className="size-full" aria-hidden="true">
+        <rect width="64" height="64" rx="18" fill="#10241B" />
+        <circle cx="32" cy="32" r="20" fill="#FFF8EC" />
+        <circle cx="32" cy="32" r="12" fill="#10241B" />
+        <path d="M39 39 50 50" stroke="#FFF8EC" strokeWidth="8" strokeLinecap="round" />
+        <path d="M39 39 49 49" stroke="#10241B" strokeWidth="4" strokeLinecap="round" />
+        <circle cx="48" cy="16" r="6" fill="#20CF63" />
       </svg>
     </span>
   );

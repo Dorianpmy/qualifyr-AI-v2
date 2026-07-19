@@ -11,12 +11,12 @@
   --card-foreground: var(--foreground);
   --popover: var(--surface-elevated);
   --popover-foreground: var(--foreground);
-  --primary: #8b5cf6;
-  --primary-hover: #9f7aea;
-  --primary-strong: #6d28d9;
+  --primary: #20cf63;
+  --primary-hover: #35db77;
+  --primary-strong: #138a42;
   --primary-foreground: #ffffff;
-  --primary-soft: rgb(139 92 246 / 10%);
-  --primary-border: rgb(139 92 246 / 24%);
+  --primary-soft: rgb(32 207 99 / 11%);
+  --primary-border: rgb(32 207 99 / 26%);
   --secondary: #f2eee8;
   --secondary-foreground: #292723;
   --muted: #f2eee8;
@@ -36,7 +36,7 @@
   --border-strong: #ddd7ce;
   --input: var(--border);
   --ring: var(--primary);
-  --selection: rgb(139 92 246 / 24%);
+  --selection: rgb(32 207 99 / 24%);
   --on-dark: #ffffff;
   --overlay: rgb(7 16 11 / 48%);
 
@@ -54,10 +54,11 @@
   --header: rgb(251 248 241 / 94%);
 
   /* Glass and blur */
-  --glass: rgb(255 255 255 / 72%);
-  --glass-strong: rgb(255 255 255 / 86%);
-  --glass-border: rgb(255 255 255 / 58%);
-  --glass-highlight: rgb(255 255 255 / 42%);
+  --glass: rgb(255 255 255 / 58%);
+  --glass-strong: rgb(255 255 255 / 76%);
+  --glass-border: rgb(255 255 255 / 72%);
+  --glass-highlight: rgb(255 255 255 / 68%);
+  --glass-tint: rgb(32 207 99 / 5%);
   --blur-soft: 10px;
   --blur-medium: 16px;
   --blur-strong: 24px;
@@ -67,9 +68,9 @@
   --shadow-soft: 0 10px 28px rgb(17 17 17 / 5%);
   --shadow-card: 0 16px 44px rgb(17 17 17 / 5.5%);
   --shadow-hover: 0 22px 58px rgb(17 17 17 / 8.5%);
-  --shadow-primary: 0 14px 34px rgb(139 92 246 / 22%);
+  --shadow-primary: 0 14px 34px rgb(32 207 99 / 20%);
   --shadow-sidebar: 0 18px 44px rgb(0 0 0 / 20%);
-  --shadow-focus: 0 0 0 4px rgb(139 92 246 / 20%);
+  --shadow-focus: 0 0 0 4px rgb(32 207 99 / 20%);
 
   /* Radius */
   --radius: 1rem;
