@@ -2,7 +2,7 @@
 
 Fondation neuve du produit Qualifyr AI. Le produit est pensé autour du **Dossier** : l’IA comprend, le moteur qualifie, l’humain valide.
 
-Cette étape ne contient volontairement aucun AI Intake, Playbook, Dossier, Workflow, CRM ou Agent.
+Cette étape contient l’authentification Supabase complète et une zone privée minimale. Elle ne contient volontairement aucun AI Intake, Playbook, Dossier, Workflow, CRM ou Agent.
 
 ## Stack
 
@@ -29,6 +29,8 @@ npm run dev
 ```
 
 La page est disponible sur `http://localhost:3000` et Supabase Studio sur `http://127.0.0.1:55323`. Les ports Supabase `5532x` évitent de perturber un éventuel projet V1 local déjà actif.
+
+Les parcours d’authentification et leur procédure de vérification sont documentés dans [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md).
 
 ## Scripts
 
@@ -83,7 +85,8 @@ La validation est paresseuse : un build purement statique ne crée aucun client 
 │   └── proxy.ts                    # rafraîchissement cookie Supabase, jamais seule barrière auth
 ├── supabase/
 │   ├── config.toml                 # stack Supabase locale
-│   └── migrations/                 # schéma versionné et politiques RLS
+│   ├── migrations/                 # schéma versionné et politiques RLS
+│   └── tests/database/              # tests pgTAP des politiques et triggers
 ├── .env.example                    # contrat de configuration sans secret
 ├── components.json                # configuration shadcn/ui
 ├── eslint.config.mjs              # règles Next.js et TypeScript
@@ -123,9 +126,8 @@ Le code de Qualifyr V1 n’était pas présent dans ce workspace. La direction p
 
 ## Prochaines améliorations proposées
 
-1. Faire un audit visuel V1 (tokens, états, navigation, motion) avant toute UI produit.
-2. Étendre les tests SQL pgTAP existants avec des scénarios d’isolation pour chaque nouvelle politique RLS.
+1. Configurer un SMTP de production et tester la délivrabilité avant mise en ligne.
+2. Faire valider les textes juridiques (`LEGAL_REVIEW_REQUIRED`).
 3. Configurer CI sur `npm run check`, le build et les tests Supabase.
-4. Générer les types DB dans CI et refuser les différences non commitées.
-5. Ajouter observabilité, journal d’audit et idempotence au moment du premier vrai cas d’usage.
-6. Définir le premier contrat de Dossier avant de choisir un fournisseur IA ou un modèle.
+4. Ajouter OAuth, MFA et SSO uniquement dans leurs phases dédiées.
+5. Étendre les catalogues i18n lors de l’ouverture d’une nouvelle locale.

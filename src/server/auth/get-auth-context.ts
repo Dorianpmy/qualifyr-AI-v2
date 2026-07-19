@@ -1,5 +1,7 @@
 import "server-only";
 
+import { redirect } from "next/navigation";
+
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthContext = {
@@ -15,4 +17,15 @@ export async function getAuthContext(): Promise<AuthContext | null> {
   }
 
   return { userId: data.claims.sub };
+}
+
+export async function requireAuthContext(): Promise<AuthContext> {
+  const context = await getAuthContext();
+  if (!context) redirect("/connexion?erreur=session");
+  return context;
+}
+
+export async function redirectAuthenticatedUser() {
+  const context = await getAuthContext();
+  if (context) redirect("/app");
 }

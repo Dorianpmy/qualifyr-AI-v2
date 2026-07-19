@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
+import { i18nConfig } from "@/config/i18n";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,8 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="fr"
+      lang={i18nConfig.defaultLocale}
       data-theme="light"
+      data-scroll-behavior="smooth"
       className={`${GeistSans.variable} ${GeistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
