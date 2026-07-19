@@ -23,6 +23,12 @@ La création possède une clé d’idempotence unique par créateur. L’accepta
 
 La clé publiable est utilisée avec RLS. Aucune clé `service_role`/secrète n’est créée ou envoyée au navigateur.
 
+## Dossiers privés
+
+`service_requests` et `service_request_events` activent et forcent RLS. Les lectures exigent un membership actif et les tables refusent toute écriture directe aux rôles API. Les RPC de création, modification, transition, assignation, archivage, export et suppression redérivent l’utilisateur, l’organisation et le rôle. Les versions empêchent les écrasements concurrents et une assignation étrangère ou inactive est rejetée.
+
+La liste et le dashboard utilisent des DTO minimisés et aucune donnée privée n’est placée dans un cache partagé. La référence opaque n’est jamais considérée comme une autorisation.
+
 ## Dashboard privé
 
 Le layout `/app/[organizationSlug]` résout l’organisation et le membership actif avant de rendre le shell. `getOrganizationDashboard` réutilise ce contrôle, scope chaque lecture par l’organisation autorisée et réduit le DTO selon le rôle. Le slug, le sélecteur et la navigation ne sont jamais des autorisations.
@@ -31,7 +37,7 @@ Le dashboard ne possède aucun cache partagé. Les invitations ne sont pas inter
 
 ## Tests A/B
 
-Les tests pgTAP créent deux organisations, leurs propriétaires et membres, puis vérifient l’impossibilité de lire, inviter, modifier ou retirer au-delà de la frontière. Ils couvrent aussi double soumission, rôles, dernier propriétaire, token hashé, expiration, email différent, usage unique et perte d’accès après retrait.
+Les tests pgTAP créent deux organisations, leurs propriétaires et membres, puis vérifient l’impossibilité de lire, inviter, modifier, attribuer ou supprimer au-delà de la frontière. Ils couvrent aussi idempotence, rôles, versions, transitions, archivage, export, dernier propriétaire, tokens d’invitation et perte d’accès après retrait.
 
 ## Parcours manuel local
 

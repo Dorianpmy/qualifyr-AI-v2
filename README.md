@@ -2,7 +2,7 @@
 
 Fondation neuve du produit Qualifyr AI. Le produit est pensé autour du **Dossier** : l’IA comprend, le moteur qualifie, l’humain valide.
 
-Cette étape contient l’authentification Supabase, la fondation multi-tenant et un dashboard d’organisation réel : paramètres régionaux, configuration, membres et invitations autorisées. Elle ne contient volontairement aucun AI Intake, Playbook, Dossier, Workflow, CRM ou Agent.
+Cette étape contient l’authentification Supabase, la fondation multi-tenant, un dashboard d’organisation réel et le premier cœur métier : les Dossiers de demande de service scoppés par organisation. Elle ne contient volontairement aucun AI Intake, Playbook, Workflow, CRM ou Agent.
 
 ## Stack
 
@@ -30,7 +30,7 @@ npm run dev
 
 La page est disponible sur `http://localhost:3000` et Supabase Studio sur `http://127.0.0.1:55323`. Les ports Supabase `5532x` évitent de perturber un éventuel projet V1 local déjà actif.
 
-Les parcours d’authentification sont documentés dans [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md). Le tenant canonique, la sécurité, l’internationalisation et le dashboard sont détaillés dans [`docs/ORGANIZATIONS_AND_MEMBERSHIPS.md`](docs/ORGANIZATIONS_AND_MEMBERSHIPS.md), [`docs/MULTI_TENANT_SECURITY.md`](docs/MULTI_TENANT_SECURITY.md), [`docs/INTERNATIONALIZATION_FOUNDATION.md`](docs/INTERNATIONALIZATION_FOUNDATION.md) et [`docs/ORGANIZATION_DASHBOARD.md`](docs/ORGANIZATION_DASHBOARD.md).
+Les parcours d’authentification sont documentés dans [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md). Le tenant canonique, la sécurité, l’internationalisation et le dashboard sont détaillés dans [`docs/ORGANIZATIONS_AND_MEMBERSHIPS.md`](docs/ORGANIZATIONS_AND_MEMBERSHIPS.md), [`docs/MULTI_TENANT_SECURITY.md`](docs/MULTI_TENANT_SECURITY.md), [`docs/INTERNATIONALIZATION_FOUNDATION.md`](docs/INTERNATIONALIZATION_FOUNDATION.md) et [`docs/ORGANIZATION_DASHBOARD.md`](docs/ORGANIZATION_DASHBOARD.md). Le modèle Dossier, sa machine à états, sa sécurité et ses tests sont décrits dans [`docs/SERVICE_REQUESTS.md`](docs/SERVICE_REQUESTS.md), [`docs/SERVICE_REQUEST_STATE_MACHINE.md`](docs/SERVICE_REQUEST_STATE_MACHINE.md), [`docs/SERVICE_REQUEST_SECURITY.md`](docs/SERVICE_REQUEST_SECURITY.md) et [`docs/SERVICE_REQUEST_TEST_MATRIX.md`](docs/SERVICE_REQUEST_TEST_MATRIX.md).
 
 ## Scripts
 
@@ -74,7 +74,7 @@ La validation est paresseuse : un build purement statique ne crée aucun client 
 │   │   └── ui/                     # primitives shadcn accessibles et personnalisables
 │   ├── config/                     # configuration et validation d’environnement
 │   ├── db/                         # futurs repositories et requêtes typées
-│   ├── features/                   # futures capacités métier, isolées par domaine
+│   ├── features/                   # capacités isolées par domaine, dont service-requests
 │   ├── hooks/                      # hooks React réellement transverses
 │   ├── lib/                        # adaptateurs techniques réutilisables (Supabase, utils)
 │   ├── server/                     # cas d’usage exclusivement serveur et auth context
@@ -98,7 +98,7 @@ La validation est paresseuse : un build purement statique ne crée aucun client 
 ### Règles de séparation
 
 - `app/` compose les routes ; la logique n’y vit pas.
-- `features/` possédera la logique et l’interface propres à chaque capacité.
+- `features/` possède la logique et l’interface propres à chaque capacité.
 - `server/` orchestre l’autorisation et les cas d’usage côté serveur.
 - `db/` encapsule les lectures/écritures PostgreSQL.
 - `services/` encapsule les systèmes externes. Tout futur appel IA passe par `services/ai`.
@@ -108,7 +108,7 @@ La validation est paresseuse : un build purement statique ne crée aucun client 
 
 `Organization` est l’unique tenant canonique. Les organisations, memberships et invitations activent et forcent RLS. Les mutations sensibles utilisent des RPC transactionnels qui dérivent l’identité de `auth.uid()` ; aucune clé privilégiée n’est utilisée par l’application.
 
-Toute future table privée devra contenir un `organization_id` non nul, indexé, référencé vers `organizations`, avec RLS et des politiques testées. Le Proxy rafraîchit la session avec `getClaims()`, mais chaque Server Component, Server Action ou Route Handler sensible devra réautoriser l’accès ; RLS reste la dernière barrière.
+Toute table privée, dont `service_requests` et `service_request_events`, contient un `organization_id` non nul, indexé, référencé vers `organizations`, avec RLS forcée et des politiques testées. Le Proxy rafraîchit la session avec `getClaims()`, mais chaque Server Component, Server Action ou Route Handler sensible réautorise l’accès ; RLS reste la dernière barrière.
 
 ## Design system
 
@@ -122,7 +122,7 @@ Le code de Qualifyr V1 n’était pas présent dans ce workspace. La direction p
 - Pas de client Supabase global : chaque client serveur est créé à la demande avec le cookie store de la requête.
 - Pas d’appel IA réel : `DisabledAiProvider` échoue explicitement et empêche les appels accidentels.
 - Pas de `service_role` côté navigateur : seules les clés publiables peuvent être exposées.
-- Pas de dashboard fictif : la route d’organisation agrège uniquement des données réelles dans un DTO serveur minimisé et scoppé.
+- Pas de dashboard fictif : la route d’organisation agrège uniquement des données réelles, y compris les Dossiers actifs, à traiter et récents, dans un DTO serveur minimisé et scoppé.
 
 ## Prochaines améliorations proposées
 

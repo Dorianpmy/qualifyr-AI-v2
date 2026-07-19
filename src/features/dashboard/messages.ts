@@ -10,5 +10,5 @@ export const dashboardMessages = {
   comingSoon: "Bientôt disponible",
   comingSoonTitle: "Le Dossier arrive à la prochaine phase",
   comingSoonDescription: "Transformez chaque demande entrante en Dossier complet, vérifié et prêt à traiter.",
-  navigation: { home: "Accueil", members: "Membres" },
+  navigation: { home: "Accueil", dossiers: "Dossiers", members: "Membres" },
 } as const;

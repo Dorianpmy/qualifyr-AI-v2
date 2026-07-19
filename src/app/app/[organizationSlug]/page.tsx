@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Circle, Clock3, Globe2, Sparkles, Users } from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle, FilePlus2, FolderKanban, Globe2, Sparkles, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { formatOrganizationDate, getOrganizationGreeting, resolveIntlContext } f
 import { dashboardMessages as messages } from "@/features/dashboard/messages";
 import { calculateOrganizationReadiness, getNextRecommendedAction } from "@/features/dashboard/readiness";
 import { organizationMessages } from "@/features/organizations/messages";
-import { canManageMembers } from "@/features/organizations/permissions";
+import { serviceRequestMessages } from "@/features/service-requests/messages";
 import { getOrganizationDashboard } from "@/server/dashboard/service";
 
 function labelFromMap<T extends Record<string, string>>(map: T, value: string | null) {
@@ -39,10 +39,12 @@ export default async function OrganizationDashboardPage({ params }: { params: Pr
   const setup = calculateOrganizationReadiness(readinessInput);
   const recommendedAction = getNextRecommendedAction(readinessInput, data.organization.slug);
   const greeting = getOrganizationGreeting(new Date(), intl.locale, intl.timezone);
-  const manageMembers = canManageMembers(data.currentUser.role);
-
   return <main className="mx-auto grid w-full max-w-[var(--content-max)] gap-6 p-4 sm:p-8">
-    <PageHeader eyebrow={<Badge variant="success">{organizationMessages.roles[data.currentUser.role]}</Badge>} title={`${greeting}${data.currentUser.firstName ? ` ${data.currentUser.firstName}` : ""}, ${messages.title}`} description={`${data.organization.name} · ${formatOrganizationDate(new Date(), intl.locale, intl.timezone)}`} actions={manageMembers ? <Button asChild variant="glass"><Link href={`/app/${data.organization.slug}/membres`}><Users />Gérer l’équipe</Link></Button> : undefined} />
+    <PageHeader eyebrow={<Badge variant="success">{organizationMessages.roles[data.currentUser.role]}</Badge>} title={`${greeting}${data.currentUser.firstName ? ` ${data.currentUser.firstName}` : ""}, ${messages.title}`} description={`${data.organization.name} · ${formatOrganizationDate(new Date(), intl.locale, intl.timezone)}`} actions={<Button asChild variant="glass"><Link href={`/app/${data.organization.slug}/dossiers/nouveau`}><FilePlus2 />Créer un Dossier</Link></Button>} />
+
+    <div className="grid gap-4 sm:grid-cols-2"><Card className="hover:translate-y-0"><CardHeader><CardDescription>Dossiers actifs</CardDescription><CardTitle className="text-3xl">{data.serviceRequests.activeCount}</CardTitle></CardHeader></Card><Card className="hover:translate-y-0"><CardHeader><CardDescription>À traiter</CardDescription><CardTitle className="text-3xl">{data.serviceRequests.attentionCount}</CardTitle></CardHeader></Card></div>
+
+    <Card className="hover:translate-y-0"><CardHeader><FolderKanban className="mb-2 size-5 text-primary"/><CardTitle>Dossiers récents</CardTitle><CardDescription>Les cinq dernières demandes réellement enregistrées dans cette organisation.</CardDescription></CardHeader><CardContent>{data.serviceRequests.recent.length?<ul className="divide-y">{data.serviceRequests.recent.map(item=><li key={item.referenceCode} className="flex flex-wrap items-center gap-3 py-3"><Link className="font-mono text-sm font-bold text-primary hover:underline" href={`/app/${data.organization.slug}/dossiers/${item.referenceCode}`}>{item.referenceCode}</Link><span className="min-w-0 flex-1 truncate font-semibold">{item.title}</span><Badge>{serviceRequestMessages.statuses[item.status]}</Badge><span className="text-xs text-muted-foreground">{item.assigneeName??"Non attribué"} · {formatOrganizationDate(item.updatedAt,intl.locale,intl.timezone)}</span></li>)}</ul>:<p className="text-sm text-muted-foreground">Aucun Dossier pour le moment. La création manuelle est maintenant disponible.</p>}</CardContent><CardFooter><Button asChild variant="outline"><Link href={`/app/${data.organization.slug}/dossiers`}>Voir tous les Dossiers<ArrowRight/></Link></Button></CardFooter></Card>
 
     <div className="grid gap-6 xl:grid-cols-[1.15fr_.85fr]">
       <Card id="organisation" className="hover:translate-y-0">
@@ -79,8 +81,6 @@ export default async function OrganizationDashboardPage({ params }: { params: Pr
       </Card>
     </div>
 
-    <Card className="border-dashed bg-muted/25 hover:translate-y-0">
-      <CardHeader><Badge><Clock3 className="size-3" />{messages.comingSoon}</Badge><CardTitle className="mt-3">{messages.comingSoonTitle}</CardTitle><CardDescription>{messages.comingSoonDescription}</CardDescription></CardHeader>
-    </Card>
+    <Card className="border-dashed bg-muted/25 hover:translate-y-0"><CardHeader><Badge><Sparkles className="size-3" />Prochaine phase</Badge><CardTitle className="mt-3">Qualification structurée</CardTitle><CardDescription>Les Playbooks et la qualification automatique ne sont pas encore actifs.</CardDescription></CardHeader></Card>
   </main>;
 }

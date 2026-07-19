@@ -4,6 +4,7 @@ import { canManageMembers } from "@/features/organizations/permissions";
 import { createClient } from "@/lib/supabase/server";
 import { requireAuthContext } from "@/server/auth/get-auth-context";
 import { listOrganizationInvitations, listOrganizationMembers, requireOrganizationMembership } from "@/server/organizations/service";
+import { getServiceRequestDashboardData } from "@/server/service-requests/service";
 
 export type OrganizationDashboardData = {
   organization: {
@@ -29,6 +30,7 @@ export type OrganizationDashboardData = {
     pendingInvitationsCount: number | null;
     previews: Array<{ userId: string; displayName: string; initials: string }>;
   };
+  serviceRequests: Awaited<ReturnType<typeof getServiceRequestDashboardData>>;
 };
 
 function memberDisplayName(member: { first_name: string | null; last_name: string | null }) {
@@ -50,8 +52,9 @@ export async function getOrganizationDashboard(organizationSlug: string): Promis
   const invitationsPromise = canManageMembers(membership.role)
     ? listOrganizationInvitations(membership.id)
     : Promise.resolve(null);
-  const [{ data: organization, error: organizationError }, { data: profile, error: profileError }, members, invitations] = await Promise.all([
-    organizationPromise, profilePromise, membersPromise, invitationsPromise,
+  const serviceRequestsPromise=getServiceRequestDashboardData(membership.id);
+  const [{ data: organization, error: organizationError }, { data: profile, error: profileError }, members, invitations, serviceRequests] = await Promise.all([
+    organizationPromise, profilePromise, membersPromise, invitationsPromise, serviceRequestsPromise,
   ]);
   if (organizationError || !organization) throw new Error("dashboard_unavailable");
   if (profileError && profileError.code !== "PGRST116") throw new Error("dashboard_unavailable");
@@ -83,5 +86,6 @@ export async function getOrganizationDashboard(organizationSlug: string): Promis
         return { userId: member.user_id, displayName, initials: initials(displayName) };
       }),
     },
+    serviceRequests,
   };
 }

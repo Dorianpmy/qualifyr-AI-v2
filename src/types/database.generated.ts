@@ -233,6 +233,149 @@ export type Database = {
         }
         Relationships: []
       }
+      service_request_events: {
+        Row: {
+          actor_user_id: string
+          created_at: string
+          event_type: Database["public"]["Enums"]["service_request_event_type"]
+          id: string
+          metadata: Json
+          organization_id: string
+          service_request_id: string
+        }
+        Insert: {
+          actor_user_id: string
+          created_at?: string
+          event_type: Database["public"]["Enums"]["service_request_event_type"]
+          id?: string
+          metadata?: Json
+          organization_id: string
+          service_request_id: string
+        }
+        Update: {
+          actor_user_id?: string
+          created_at?: string
+          event_type?: Database["public"]["Enums"]["service_request_event_type"]
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          service_request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_request_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_request_events_service_request_id_fkey"
+            columns: ["service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_requests: {
+        Row: {
+          address_line_1: string | null
+          archived_at: string | null
+          assigned_user_id: string | null
+          city: string
+          closed_at: string | null
+          country_code: string
+          created_at: string
+          created_by: string
+          creation_request_id: string
+          id: string
+          lock_version: number
+          organization_id: string
+          original_request: string
+          postal_code: string
+          preferred_contact_channel: Database["public"]["Enums"]["preferred_contact_channel"]
+          reference_code: string
+          requester_email: string | null
+          requester_first_name: string | null
+          requester_last_name: string | null
+          requester_locale: string | null
+          requester_phone: string | null
+          service_label: string
+          source: Database["public"]["Enums"]["service_request_source"]
+          status: Database["public"]["Enums"]["service_request_status"]
+          title: string
+          updated_at: string
+          updated_by: string
+        }
+        Insert: {
+          address_line_1?: string | null
+          archived_at?: string | null
+          assigned_user_id?: string | null
+          city: string
+          closed_at?: string | null
+          country_code: string
+          created_at?: string
+          created_by: string
+          creation_request_id: string
+          id?: string
+          lock_version?: number
+          organization_id: string
+          original_request: string
+          postal_code: string
+          preferred_contact_channel?: Database["public"]["Enums"]["preferred_contact_channel"]
+          reference_code: string
+          requester_email?: string | null
+          requester_first_name?: string | null
+          requester_last_name?: string | null
+          requester_locale?: string | null
+          requester_phone?: string | null
+          service_label: string
+          source?: Database["public"]["Enums"]["service_request_source"]
+          status?: Database["public"]["Enums"]["service_request_status"]
+          title: string
+          updated_at?: string
+          updated_by: string
+        }
+        Update: {
+          address_line_1?: string | null
+          archived_at?: string | null
+          assigned_user_id?: string | null
+          city?: string
+          closed_at?: string | null
+          country_code?: string
+          created_at?: string
+          created_by?: string
+          creation_request_id?: string
+          id?: string
+          lock_version?: number
+          organization_id?: string
+          original_request?: string
+          postal_code?: string
+          preferred_contact_channel?: Database["public"]["Enums"]["preferred_contact_channel"]
+          reference_code?: string
+          requester_email?: string | null
+          requester_first_name?: string | null
+          requester_last_name?: string | null
+          requester_locale?: string | null
+          requester_phone?: string | null
+          service_label?: string
+          source?: Database["public"]["Enums"]["service_request_source"]
+          status?: Database["public"]["Enums"]["service_request_status"]
+          title?: string
+          updated_at?: string
+          updated_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -244,6 +387,15 @@ export type Database = {
           organization_id: string
           organization_slug: string
         }[]
+      }
+      assign_service_request: {
+        Args: {
+          expected_version: number
+          requested_assignee: string
+          target_organization_id: string
+          target_reference: string
+        }
+        Returns: number
       }
       create_organization_invitation: {
         Args: {
@@ -273,6 +425,38 @@ export type Database = {
           organization_slug: string
         }[]
       }
+      create_service_request: {
+        Args: {
+          request_id: string
+          requested_address: string
+          requested_assignee: string
+          requested_city: string
+          requested_contact_channel: Database["public"]["Enums"]["preferred_contact_channel"]
+          requested_country_code: string
+          requested_email: string
+          requested_first_name: string
+          requested_last_name: string
+          requested_locale: string
+          requested_original_request: string
+          requested_phone: string
+          requested_postal_code: string
+          requested_service_label: string
+          requested_title: string
+          target_organization_id: string
+        }
+        Returns: {
+          lock_version: number
+          reference_code: string
+        }[]
+      }
+      delete_service_request: {
+        Args: {
+          confirmation_reference: string
+          target_organization_id: string
+          target_reference: string
+        }
+        Returns: undefined
+      }
       list_organization_members: {
         Args: { target_organization_id: string }
         Returns: {
@@ -285,6 +469,37 @@ export type Database = {
           user_id: string
         }[]
       }
+      list_service_requests: {
+        Args: {
+          archive_filter?: string
+          assignee_filter?: string
+          country_filter?: string
+          page_number?: number
+          page_size?: number
+          search_query?: string
+          sort_order?: string
+          status_filter?: Database["public"]["Enums"]["service_request_status"]
+          target_organization_id: string
+        }
+        Returns: {
+          assignee_name: string
+          city: string
+          country_code: string
+          created_at: string
+          is_archived: boolean
+          reference_code: string
+          requester_name: string
+          service_label: string
+          status: Database["public"]["Enums"]["service_request_status"]
+          title: string
+          total_count: number
+          updated_at: string
+        }[]
+      }
+      record_service_request_export: {
+        Args: { target_organization_id: string; target_reference: string }
+        Returns: undefined
+      }
       remove_organization_member: {
         Args: { target_organization_id: string; target_user_id: string }
         Returns: undefined
@@ -293,6 +508,25 @@ export type Database = {
         Args: { target_invitation_id: string }
         Returns: undefined
       }
+      set_service_request_archived: {
+        Args: {
+          expected_version: number
+          should_archive: boolean
+          target_organization_id: string
+          target_reference: string
+        }
+        Returns: number
+      }
+      transition_service_request_status: {
+        Args: {
+          expected_version: number
+          reason: string
+          requested_status: Database["public"]["Enums"]["service_request_status"]
+          target_organization_id: string
+          target_reference: string
+        }
+        Returns: number
+      }
       update_organization_member_role: {
         Args: {
           requested_role: Database["public"]["Enums"]["organization_role"]
@@ -300,6 +534,27 @@ export type Database = {
           target_user_id: string
         }
         Returns: undefined
+      }
+      update_service_request: {
+        Args: {
+          expected_version: number
+          requested_address: string
+          requested_city: string
+          requested_contact_channel: Database["public"]["Enums"]["preferred_contact_channel"]
+          requested_country_code: string
+          requested_email: string
+          requested_first_name: string
+          requested_last_name: string
+          requested_locale: string
+          requested_original_request: string
+          requested_phone: string
+          requested_postal_code: string
+          requested_service_label: string
+          requested_title: string
+          target_organization_id: string
+          target_reference: string
+        }
+        Returns: number
       }
     }
     Enums: {
@@ -310,6 +565,31 @@ export type Database = {
         | "revoked"
       organization_membership_status: "active" | "suspended" | "removed"
       organization_role: "owner" | "admin" | "member"
+      preferred_contact_channel: "email" | "phone" | "none"
+      service_request_event_type:
+        | "created"
+        | "updated"
+        | "status_changed"
+        | "assigned"
+        | "unassigned"
+        | "archived"
+        | "restored"
+        | "exported"
+        | "deleted"
+      service_request_source:
+        | "manual"
+        | "public_intake"
+        | "email"
+        | "chat"
+        | "import"
+      service_request_status:
+        | "new"
+        | "collecting"
+        | "incomplete"
+        | "needs_review"
+        | "qualified"
+        | "routed"
+        | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -448,6 +728,34 @@ export const Constants = {
       ],
       organization_membership_status: ["active", "suspended", "removed"],
       organization_role: ["owner", "admin", "member"],
+      preferred_contact_channel: ["email", "phone", "none"],
+      service_request_event_type: [
+        "created",
+        "updated",
+        "status_changed",
+        "assigned",
+        "unassigned",
+        "archived",
+        "restored",
+        "exported",
+        "deleted",
+      ],
+      service_request_source: [
+        "manual",
+        "public_intake",
+        "email",
+        "chat",
+        "import",
+      ],
+      service_request_status: [
+        "new",
+        "collecting",
+        "incomplete",
+        "needs_review",
+        "qualified",
+        "routed",
+        "closed",
+      ],
     },
   },
 } as const

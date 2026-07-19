@@ -16,7 +16,7 @@ function Select({ className, children, ...props }: React.ComponentProps<"select"
   return <select data-slot="select" className={cn(controlClass, "h-12 appearance-none", className)} {...props}>{children}</select>;
 }
 
-function Field({ className, label, hint, error, children, ...props }: React.ComponentProps<"div"> & { label: string; hint?: string; error?: string; children: React.ReactNode }) {
+function Field({ className, label, hint, error, children, ...props }: React.ComponentProps<"div"> & { label: string; hint?: string | undefined; error?: string | undefined; children: React.ReactNode }) {
   return (
     <div className={cn("grid gap-2", className)} {...props}>
       <label className="grid gap-2">
