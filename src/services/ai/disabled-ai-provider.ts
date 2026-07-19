@@ -8,7 +8,7 @@ import {
 export class DisabledAiProvider implements AiProvider {
   readonly name = "disabled";
 
-  generate<TOutput>(request: AiRequest): Promise<AiResult<TOutput>> {
+  generate<TOutput>(request: AiRequest<TOutput>): Promise<AiResult<TOutput>> {
     void request;
     return Promise.reject(new AiNotConfiguredError());
   }

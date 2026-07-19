@@ -2,7 +2,7 @@
 
 Fondation neuve du produit Qualifyr AI. Le produit est pensé autour du **Dossier** : l’IA comprend, le moteur qualifie, l’humain valide.
 
-Cette étape contient l’authentification Supabase, la fondation multi-tenant, un dashboard réel, les Dossiers et leurs Playbooks versionnés avec qualification déterministe. Elle ne contient volontairement aucun AI Intake, Workflow, CRM ou Agent.
+Cette étape contient l’authentification Supabase, la fondation multi-tenant, un dashboard réel, les Dossiers, leurs Playbooks versionnés, la qualification déterministe et AI Intake interne. Elle ne contient volontairement aucun intake public, Workflow, CRM ou Agent autonome.
 
 ## Stack
 
@@ -30,7 +30,7 @@ npm run dev
 
 La page est disponible sur `http://localhost:3000` et Supabase Studio sur `http://127.0.0.1:55323`. Les ports Supabase `5532x` évitent de perturber un éventuel projet V1 local déjà actif.
 
-Les parcours d’authentification sont documentés dans [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md). Le tenant canonique, la sécurité, l’internationalisation et le dashboard sont détaillés dans les documents dédiés de `docs/`. Les fondations Playbooks sont décrites dans [`docs/PLAYBOOKS.md`](docs/PLAYBOOKS.md), [`docs/PLAYBOOK_SCHEMA.md`](docs/PLAYBOOK_SCHEMA.md), [`docs/QUALIFICATION_ENGINE.md`](docs/QUALIFICATION_ENGINE.md) et [`docs/PLAYBOOK_TEST_MATRIX.md`](docs/PLAYBOOK_TEST_MATRIX.md).
+Les parcours d’authentification sont documentés dans [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md). Les Playbooks sont décrits dans les documents `PLAYBOOK*`. AI Intake est détaillé dans [`docs/AI_INTAKE.md`](docs/AI_INTAKE.md), [`docs/AI_INTAKE_SCHEMA.md`](docs/AI_INTAKE_SCHEMA.md), [`docs/FACT_MERGE_POLICY.md`](docs/FACT_MERGE_POLICY.md), [`docs/AI_SECURITY.md`](docs/AI_SECURITY.md) et [`docs/AI_INTAKE_TEST_MATRIX.md`](docs/AI_INTAKE_TEST_MATRIX.md).
 
 ## Scripts
 
@@ -59,7 +59,8 @@ Les parcours d’authentification sont documentés dans [`docs/AUTHENTICATION.md
 | `NEXT_PUBLIC_SUPABASE_URL` | publique | URL du projet Supabase |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | publique | clé publiable, protégée par RLS |
 | `SUPABASE_SECRET_KEY` | serveur | réservée aux rares opérations privilégiées futures ; ne jamais exposer |
-| `AI_PROVIDER` | serveur | forcé à `disabled` dans cette fondation |
+| `AI_PROVIDER` | serveur | `disabled` par défaut ou `vercel-ai-gateway` |
+| `AI_MODEL`, `AI_TIMEOUT_MS` | serveur | modèle centralisé et timeout explicite |
 
 La validation est paresseuse : un build purement statique ne crée aucun client externe au chargement des modules. Les secrets ne portent jamais le préfixe `NEXT_PUBLIC_`.
 
@@ -120,7 +121,7 @@ Le code de Qualifyr V1 n’était pas présent dans ce workspace. La direction p
 
 - Pas d’ORM à ce stade : Supabase génère déjà un client et des types ; aucune logique métier ne justifie une couche supplémentaire.
 - Pas de client Supabase global : chaque client serveur est créé à la demande avec le cookie store de la requête.
-- Pas d’appel IA réel : `DisabledAiProvider` échoue explicitement et le moteur Phase 7 est entièrement déterministe.
+- AI Intake passe uniquement par le port centralisé : provider désactivé sûr, AI Gateway optionnel et adapter déterministe de test.
 - Pas de `service_role` côté navigateur : seules les clés publiables peuvent être exposées.
 - Pas de dashboard fictif : la route d’organisation agrège uniquement des données réelles, y compris les Dossiers actifs, à traiter et récents, dans un DTO serveur minimisé et scoppé.
 

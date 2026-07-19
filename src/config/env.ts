@@ -8,7 +8,11 @@ const publicEnvSchema = z.object({
 
 const serverEnvSchema = publicEnvSchema.extend({
   SUPABASE_SECRET_KEY: z.string().min(1).optional(),
-  AI_PROVIDER: z.literal("disabled").default("disabled"),
+  AI_PROVIDER: z.enum(["disabled","vercel-ai-gateway"]).default("disabled"),
+  AI_MODEL:z.string().regex(/^[a-z0-9-]+\/[A-Za-z0-9._-]+$/).default("openai/gpt-5.4"),
+  AI_TIMEOUT_MS:z.coerce.number().int().min(1000).max(120000).default(20000),
+  AI_MAX_OUTPUT_TOKENS:z.coerce.number().int().min(128).max(4096).default(1200),
+  AI_TEMPERATURE:z.coerce.number().min(0).max(1).default(0),
 });
 
 export type PublicEnv = z.infer<typeof publicEnvSchema>;
@@ -28,5 +32,9 @@ export function getServerEnv(): ServerEnv {
     ...getPublicEnv(),
     SUPABASE_SECRET_KEY: process.env.SUPABASE_SECRET_KEY,
     AI_PROVIDER: process.env.AI_PROVIDER,
+    AI_MODEL:process.env.AI_MODEL,
+    AI_TIMEOUT_MS:process.env.AI_TIMEOUT_MS,
+    AI_MAX_OUTPUT_TOKENS:process.env.AI_MAX_OUTPUT_TOKENS,
+    AI_TEMPERATURE:process.env.AI_TEMPERATURE,
   });
 }

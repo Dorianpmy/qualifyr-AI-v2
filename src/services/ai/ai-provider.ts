@@ -7,7 +7,7 @@ export const aiRequestSchema = z.object({
   correlationId: z.string().min(1),
 });
 
-export type AiRequest = z.infer<typeof aiRequestSchema>;
+export type AiRequest<TOutput=unknown> = z.infer<typeof aiRequestSchema> & {instructions?:string;outputSchema?:z.ZodType<TOutput>};
 
 export type AiResult<TOutput> = {
   output: TOutput;
@@ -17,7 +17,7 @@ export type AiResult<TOutput> = {
 
 export interface AiProvider {
   readonly name: string;
-  generate<TOutput>(request: AiRequest): Promise<AiResult<TOutput>>;
+  generate<TOutput>(request: AiRequest<TOutput>): Promise<AiResult<TOutput>>;
 }
 
 export class AiNotConfiguredError extends Error {

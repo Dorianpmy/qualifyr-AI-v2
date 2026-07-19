@@ -1,0 +1,34 @@
+import {describe,expect,it} from "vitest";
+import {renovationDemoSchema} from "@/features/playbooks/demo";
+import {calculateQualification} from "@/features/playbooks/qualification-engine";
+import {DeterministicIntakeProvider} from "@/services/ai/deterministic-intake-provider";
+import {extractIntake} from "@/server/ai-intake/orchestrator";
+import {createIntakeExtractionSchema} from "./schemas";
+import {decideFactMerge,parseHumanCorrection} from "./fact-merge";
+import {chooseNextQuestion} from "./next-question";
+import type {AiProvider} from "@/services/ai/ai-provider";
+
+const services=[{code:"renovation-salle-de-bain",name:"Rénovation salle de bain"}];
+const baseOutput={detectedServiceKey:"renovation-salle-de-bain",serviceConfidence:.9,extractedFacts:[],contradictions:[],missingInformationSummary:[],proposedNextQuestion:"Question ?",responseMessage:"Réponse.",requiresHumanReview:false};
+describe("AI Intake contracts",()=>{
+  const schema=createIntakeExtractionSchema(services.map(s=>s.code),renovationDemoSchema.fields.map(f=>f.key));
+  it("accepts a strict valid output",()=>expect(schema.safeParse(baseOutput).success).toBe(true));
+  it("rejects unknown properties",()=>expect(schema.safeParse({...baseOutput,externalAction:"send_email"}).success).toBe(false));
+  it("rejects an invented service",()=>expect(schema.safeParse({...baseOutput,detectedServiceKey:"plomberie-inventee"}).success).toBe(false));
+  it("rejects an unknown playbook field",()=>expect(schema.safeParse({...baseOutput,extractedFacts:[{fieldKey:"price",value:9000,valueType:"number",confidence:.9,sourceExcerpt:"prix",needsConfirmation:false}]}).success).toBe(false));
+  it("rejects confidence outside bounds",()=>expect(schema.safeParse({...baseOutput,serviceConfidence:2}).success).toBe(false));
+  it("classifies a new fact",()=>expect(decideFactMerge(undefined,"Namur")).toBe("create_suggested"));
+  it("does not duplicate the same fact",()=>expect(decideFactMerge({fieldKey:"city",value:"Namur",status:"suggested",confidence:.9},"Namur")).toBe("same_value"));
+  it("replaces an unconfirmed suggestion with a more precise one",()=>expect(decideFactMerge({fieldKey:"period",value:"automne",status:"suggested",confidence:.6},"octobre")).toBe("replace_suggestion"));
+  it("preserves a confirmed fact on contradiction",()=>expect(decideFactMerge({fieldKey:"surface",value:8,status:"confirmed",confidence:1},12)).toBe("create_conflict_preserve_confirmed"));
+  it("parses a human numeric correction",()=>expect(parseHumanCorrection("12","number")).toBe(12));
+  it("prioritizes a contradiction",()=>expect(chooseNextQuestion({playbook:renovationDemoSchema,facts:[{fieldKey:"surface",value:12,status:"conflicted",confidence:.9}],serviceUncertain:false})).toContain("confirmer"));
+  it("prioritizes uncertain service",()=>expect(chooseNextQuestion({playbook:renovationDemoSchema,facts:[],serviceUncertain:true})).toContain("service"));
+  it("does not repeat a high-confidence answered city",()=>expect(chooseNextQuestion({playbook:renovationDemoSchema,facts:[{fieldKey:"city",value:"Namur",status:"suggested",confidence:.97}],serviceUncertain:false})).not.toContain("ville"));
+  it("keeps a required proof authoritative",()=>{const result=calculateQualification({schema:renovationDemoSchema,values:{project_type:"Rénovation",description:"Complète",country:"BE",city:"Namur",postal_code:"5000",surface:8,building_type:"Maison",period:"octobre",availability:"semaine",email:"a@example.test"},evidence:{photos:[]},serviceAllowed:true,coverageMatched:true,contactAvailable:true});expect(result.recommendedStatus).toBe("incomplete");});
+  it("never automatically qualifies even when complete",()=>{const result=calculateQualification({schema:renovationDemoSchema,values:{project_type:"Rénovation",description:"Complète",country:"BE",city:"Namur",postal_code:"5000",surface:8,building_type:"Maison",period:"octobre",availability:"semaine",email:"a@example.test"},evidence:{photos:[{}]},serviceAllowed:true,coverageMatched:true,contactAvailable:true});expect(result.recommendedStatus).toBe("needs_review");});
+  it.each(["fr-FR","fr-BE","fr-CH","pl-PL","ro-RO"])("extracts safely for locale %s",async locale=>{const provider=new DeterministicIntakeProvider();const output=await provider.generate({operation:"intake_extraction",organizationId:"0f1e2d3c-4b5a-4678-9012-3456789abcde",correlationId:"test",input:{locale,services:services.map(s=>({key:s.code,name:s.name})),playbook:renovationDemoSchema,knownValues:{},confirmedFacts:{},recentMessages:[],message:"Bonjour, je voudrais refaire ma salle de bain à Namur vers octobre. Elle fait environ 8 m² et je peux envoyer des photos."},outputSchema:schema});expect(output.output.extractedFacts).toEqual(expect.arrayContaining([expect.objectContaining({fieldKey:"city",value:"Namur"}),expect.objectContaining({fieldKey:"surface",value:8}),expect.objectContaining({fieldKey:"period",value:"octobre"})]));});
+  it("produces the Namur next question without repeating known facts",async()=>{const result=await extractIntake({organizationId:"0f1e2d3c-4b5a-4678-9012-3456789abcde",correlationId:"0f1e2d3c-4b5a-4678-9012-3456789abcdf",locale:"fr-BE",message:"Bonjour, je voudrais refaire ma salle de bain à Namur vers octobre. Elle fait environ 8 m² et je peux envoyer des photos.",services,schema:renovationDemoSchema,knownValues:{},facts:[],recentMessages:[],provider:new DeterministicIntakeProvider()});expect(result.output.proposedNextQuestion.toLowerCase()).not.toMatch(/ville|surface|période/);expect(result.output.extractedFacts.some(f=>f.fieldKey==="photos")).toBe(false);});
+  it("propagates timeout without creating a fallback fact",async()=>{const timeoutProvider:AiProvider={name:"timeout-test",generate:async()=>{const error=new Error("provider timeout");error.name="TimeoutError";throw error;}};await expect(extractIntake({organizationId:"0f1e2d3c-4b5a-4678-9012-3456789abcde",correlationId:"0f1e2d3c-4b5a-4678-9012-3456789abcdf",locale:"fr-FR",message:"test",services,schema:renovationDemoSchema,knownValues:{},facts:[],recentMessages:[],provider:timeoutProvider})).rejects.toMatchObject({name:"TimeoutError"});});
+  it("rejects invalid provider output before persistence",async()=>{const invalidProvider:AiProvider={name:"invalid-test",generate:async<TOutput>()=>({output:{...baseOutput,detectedServiceKey:"invented"} as unknown as TOutput,model:"invalid"})};await expect(extractIntake({organizationId:"0f1e2d3c-4b5a-4678-9012-3456789abcde",correlationId:"0f1e2d3c-4b5a-4678-9012-3456789abcdf",locale:"fr-FR",message:"test",services,schema:renovationDemoSchema,knownValues:{},facts:[],recentMessages:[],provider:invalidProvider})).rejects.toBeDefined();});
+});

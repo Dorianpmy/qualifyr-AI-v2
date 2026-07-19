@@ -1,0 +1,13 @@
+import "server-only";
+import {createIntakeExtractionSchema} from "@/features/ai-intake/schemas";
+import {chooseNextQuestion} from "@/features/ai-intake/next-question";
+import {AI_INTAKE_INSTRUCTIONS_VERSION,instructionsForLocale} from "@/features/ai-intake/instructions";
+import type {IntakeExtraction} from "@/features/ai-intake/types";
+import type {AiProvider} from "@/services/ai/ai-provider";
+
+export async function extractIntake(input:{organizationId:string;correlationId:string;locale:string;message:string;services:Array<{code:string;name:string}>;schema:Parameters<typeof chooseNextQuestion>[0]["playbook"];knownValues:Record<string,unknown>;facts:Array<{field_key:string;value:string|number|boolean;status:"suggested"|"confirmed"|"conflicted"|"rejected"|"superseded";confidence:number}>;recentMessages:Array<{role:"user"|"assistant"|"system_event";content:string}>;provider?:AiProvider}){
+  const provider=input.provider??(await import("@/services/ai")).getAiProvider();const schema=createIntakeExtractionSchema(input.services.map(s=>s.code),input.schema.fields.map(f=>f.key));const context={locale:input.locale,services:input.services.map(s=>({key:s.code,name:s.name})),playbook:input.schema,knownValues:input.knownValues,confirmedFacts:Object.fromEntries(input.facts.filter(f=>f.status==="confirmed").map(f=>[f.field_key,f.value])),recentMessages:input.recentMessages.slice(-6),message:input.message};
+  const started=Date.now();const result=await provider.generate<IntakeExtraction>({operation:"intake_extraction",organizationId:input.organizationId,correlationId:input.correlationId,input:context,instructions:instructionsForLocale(input.locale),outputSchema:schema});const validated=schema.parse(result.output);
+  const factsForQuestion=[...input.facts.map(f=>({fieldKey:f.field_key,value:f.value,status:f.status,confidence:Number(f.confidence)})),...validated.extractedFacts.map(f=>({fieldKey:f.fieldKey,value:f.value,status:"suggested" as const,confidence:f.confidence}))];const question=chooseNextQuestion({playbook:input.schema,facts:factsForQuestion,serviceUncertain:validated.detectedServiceKey===null||validated.serviceConfidence<0.7});const understood=validated.extractedFacts.map(f=>`${input.schema.fields.find(field=>field.key===f.fieldKey)?.label??f.fieldKey} : ${String(f.value)}`).slice(0,3);
+  return {output:{...validated,proposedNextQuestion:question,responseMessage:`${understood.length?`J’ai bien noté ${understood.join(", ")}. `:""}${question}`},provider:provider.name,model:result.model,usage:result.usage,latencyMs:Date.now()-started,instructionsVersion:AI_INTAKE_INSTRUCTIONS_VERSION};
+}

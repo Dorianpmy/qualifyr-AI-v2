@@ -34,6 +34,98 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_executions: {
+        Row: {
+          correlation_id: string
+          created_at: string
+          error_code: string | null
+          estimated_cost: number | null
+          id: string
+          input_tokens: number | null
+          instructions_version: string
+          intake_session_id: string
+          latency_ms: number | null
+          model: string
+          operation_type: string
+          organization_id: string
+          output_tokens: number | null
+          provider: string
+          service_request_id: string
+          source_message_id: string
+          status: Database["public"]["Enums"]["ai_execution_status"]
+          structured_output: Json | null
+        }
+        Insert: {
+          correlation_id: string
+          created_at?: string
+          error_code?: string | null
+          estimated_cost?: number | null
+          id?: string
+          input_tokens?: number | null
+          instructions_version: string
+          intake_session_id: string
+          latency_ms?: number | null
+          model: string
+          operation_type: string
+          organization_id: string
+          output_tokens?: number | null
+          provider: string
+          service_request_id: string
+          source_message_id: string
+          status: Database["public"]["Enums"]["ai_execution_status"]
+          structured_output?: Json | null
+        }
+        Update: {
+          correlation_id?: string
+          created_at?: string
+          error_code?: string | null
+          estimated_cost?: number | null
+          id?: string
+          input_tokens?: number | null
+          instructions_version?: string
+          intake_session_id?: string
+          latency_ms?: number | null
+          model?: string
+          operation_type?: string
+          organization_id?: string
+          output_tokens?: number | null
+          provider?: string
+          service_request_id?: string
+          source_message_id?: string
+          status?: Database["public"]["Enums"]["ai_execution_status"]
+          structured_output?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_executions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_executions_organization_id_intake_session_id_fkey"
+            columns: ["organization_id", "intake_session_id"]
+            isOneToOne: false
+            referencedRelation: "intake_sessions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "ai_executions_organization_id_service_request_id_fkey"
+            columns: ["organization_id", "service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "ai_executions_organization_id_source_message_id_fkey"
+            columns: ["organization_id", "source_message_id"]
+            isOneToOne: false
+            referencedRelation: "intake_messages"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       coverage_areas: {
         Row: {
           area_type: Database["public"]["Enums"]["coverage_area_type"]
@@ -78,6 +170,223 @@ export type Database = {
             columns: ["organization_id", "service_definition_id"]
             isOneToOne: false
             referencedRelation: "service_definitions"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      extracted_facts: {
+        Row: {
+          confidence: number
+          confirmed_at: string | null
+          confirmed_by: string | null
+          corrected_by: string | null
+          created_at: string
+          created_by_type: Database["public"]["Enums"]["extracted_fact_creator_type"]
+          field_key: string
+          id: string
+          intake_session_id: string
+          organization_id: string
+          service_request_id: string
+          source_excerpt: string | null
+          source_message_id: string | null
+          source_type: Database["public"]["Enums"]["extracted_fact_source_type"]
+          status: Database["public"]["Enums"]["extracted_fact_status"]
+          updated_at: string
+          value: Json
+          value_type: Database["public"]["Enums"]["extracted_fact_value_type"]
+        }
+        Insert: {
+          confidence: number
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          corrected_by?: string | null
+          created_at?: string
+          created_by_type: Database["public"]["Enums"]["extracted_fact_creator_type"]
+          field_key: string
+          id?: string
+          intake_session_id: string
+          organization_id: string
+          service_request_id: string
+          source_excerpt?: string | null
+          source_message_id?: string | null
+          source_type: Database["public"]["Enums"]["extracted_fact_source_type"]
+          status: Database["public"]["Enums"]["extracted_fact_status"]
+          updated_at?: string
+          value: Json
+          value_type: Database["public"]["Enums"]["extracted_fact_value_type"]
+        }
+        Update: {
+          confidence?: number
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          corrected_by?: string | null
+          created_at?: string
+          created_by_type?: Database["public"]["Enums"]["extracted_fact_creator_type"]
+          field_key?: string
+          id?: string
+          intake_session_id?: string
+          organization_id?: string
+          service_request_id?: string
+          source_excerpt?: string | null
+          source_message_id?: string | null
+          source_type?: Database["public"]["Enums"]["extracted_fact_source_type"]
+          status?: Database["public"]["Enums"]["extracted_fact_status"]
+          updated_at?: string
+          value?: Json
+          value_type?: Database["public"]["Enums"]["extracted_fact_value_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "extracted_facts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "extracted_facts_organization_id_intake_session_id_fkey"
+            columns: ["organization_id", "intake_session_id"]
+            isOneToOne: false
+            referencedRelation: "intake_sessions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "extracted_facts_organization_id_service_request_id_fkey"
+            columns: ["organization_id", "service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "extracted_facts_organization_id_source_message_id_fkey"
+            columns: ["organization_id", "source_message_id"]
+            isOneToOne: false
+            referencedRelation: "intake_messages"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      intake_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          intake_session_id: string
+          organization_id: string
+          request_id: string | null
+          role: Database["public"]["Enums"]["intake_message_role"]
+          sequence_number: number
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          intake_session_id: string
+          organization_id: string
+          request_id?: string | null
+          role: Database["public"]["Enums"]["intake_message_role"]
+          sequence_number: number
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          intake_session_id?: string
+          organization_id?: string
+          request_id?: string | null
+          role?: Database["public"]["Enums"]["intake_message_role"]
+          sequence_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intake_messages_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "intake_messages_organization_id_intake_session_id_fkey"
+            columns: ["organization_id", "intake_session_id"]
+            isOneToOne: false
+            referencedRelation: "intake_sessions"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      intake_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          created_by: string
+          detected_service_definition_id: string | null
+          id: string
+          locale: string
+          next_question: string | null
+          organization_id: string
+          playbook_version_id: string
+          service_confidence: number | null
+          service_request_id: string
+          status: Database["public"]["Enums"]["intake_session_status"]
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          created_by: string
+          detected_service_definition_id?: string | null
+          id?: string
+          locale: string
+          next_question?: string | null
+          organization_id: string
+          playbook_version_id: string
+          service_confidence?: number | null
+          service_request_id: string
+          status?: Database["public"]["Enums"]["intake_session_status"]
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string
+          detected_service_definition_id?: string | null
+          id?: string
+          locale?: string
+          next_question?: string | null
+          organization_id?: string
+          playbook_version_id?: string
+          service_confidence?: number | null
+          service_request_id?: string
+          status?: Database["public"]["Enums"]["intake_session_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intake_sessions_organization_id_detected_service_definitio_fkey"
+            columns: ["organization_id", "detected_service_definition_id"]
+            isOneToOne: false
+            referencedRelation: "service_definitions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "intake_sessions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "intake_sessions_organization_id_playbook_version_id_fkey"
+            columns: ["organization_id", "playbook_version_id"]
+            isOneToOne: false
+            referencedRelation: "playbook_versions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "intake_sessions_organization_id_service_request_id_fkey"
+            columns: ["organization_id", "service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
             referencedColumns: ["organization_id", "id"]
           },
         ]
@@ -806,6 +1115,15 @@ export type Database = {
         }
         Returns: string
       }
+      append_intake_user_message: {
+        Args: {
+          requested_content: string
+          requested_request_id: string
+          target_organization_id: string
+          target_session_id: string
+        }
+        Returns: string
+      }
       assign_service_request: {
         Args: {
           expected_version: number
@@ -962,12 +1280,52 @@ export type Database = {
         Args: { target_organization_id: string; target_version_id: string }
         Returns: undefined
       }
+      record_intake_failure: {
+        Args: {
+          requested_correlation_id: string
+          requested_error_code: string
+          requested_instructions_version: string
+          requested_latency_ms: number
+          requested_model: string
+          requested_provider: string
+          requested_status: Database["public"]["Enums"]["ai_execution_status"]
+          target_message_id: string
+          target_organization_id: string
+          target_session_id: string
+        }
+        Returns: string
+      }
+      record_intake_success: {
+        Args: {
+          requested_correlation_id: string
+          requested_input_tokens: number
+          requested_instructions_version: string
+          requested_latency_ms: number
+          requested_model: string
+          requested_output: Json
+          requested_output_tokens: number
+          requested_provider: string
+          target_message_id: string
+          target_organization_id: string
+          target_session_id: string
+        }
+        Returns: string
+      }
       record_service_request_export: {
         Args: { target_organization_id: string; target_reference: string }
         Returns: undefined
       }
       remove_organization_member: {
         Args: { target_organization_id: string; target_user_id: string }
+        Returns: undefined
+      }
+      resolve_extracted_fact: {
+        Args: {
+          requested_action: string
+          requested_value: Json
+          target_fact_id: string
+          target_organization_id: string
+        }
         Returns: undefined
       }
       revoke_organization_invitation: {
@@ -983,6 +1341,14 @@ export type Database = {
         }
         Returns: number
       }
+      start_intake_session: {
+        Args: {
+          requested_locale: string
+          target_organization_id: string
+          target_reference: string
+        }
+        Returns: string
+      }
       transition_service_request_status: {
         Args: {
           expected_version: number
@@ -992,6 +1358,14 @@ export type Database = {
           target_reference: string
         }
         Returns: number
+      }
+      update_intake_next_question: {
+        Args: {
+          requested_question: string
+          target_organization_id: string
+          target_session_id: string
+        }
+        Returns: undefined
       }
       update_organization_member_role: {
         Args: {
@@ -1037,7 +1411,37 @@ export type Database = {
       }
     }
     Enums: {
+      ai_execution_status:
+        | "started"
+        | "succeeded"
+        | "failed"
+        | "invalid_output"
+        | "timed_out"
       coverage_area_type: "country" | "city" | "postal_code"
+      extracted_fact_creator_type: "ai" | "human"
+      extracted_fact_source_type:
+        | "ai_extraction"
+        | "manual"
+        | "public_intake"
+        | "document_extraction"
+      extracted_fact_status:
+        | "suggested"
+        | "confirmed"
+        | "conflicted"
+        | "rejected"
+        | "superseded"
+      extracted_fact_value_type:
+        | "text"
+        | "number"
+        | "boolean"
+        | "date"
+        | "email"
+        | "phone"
+        | "country"
+        | "city"
+        | "postal_code"
+      intake_message_role: "user" | "assistant" | "system_event"
+      intake_session_status: "active" | "paused" | "completed" | "cancelled"
       organization_invitation_status:
         | "pending"
         | "accepted"
@@ -1213,7 +1617,41 @@ export const Constants = {
   },
   public: {
     Enums: {
+      ai_execution_status: [
+        "started",
+        "succeeded",
+        "failed",
+        "invalid_output",
+        "timed_out",
+      ],
       coverage_area_type: ["country", "city", "postal_code"],
+      extracted_fact_creator_type: ["ai", "human"],
+      extracted_fact_source_type: [
+        "ai_extraction",
+        "manual",
+        "public_intake",
+        "document_extraction",
+      ],
+      extracted_fact_status: [
+        "suggested",
+        "confirmed",
+        "conflicted",
+        "rejected",
+        "superseded",
+      ],
+      extracted_fact_value_type: [
+        "text",
+        "number",
+        "boolean",
+        "date",
+        "email",
+        "phone",
+        "country",
+        "city",
+        "postal_code",
+      ],
+      intake_message_role: ["user", "assistant", "system_event"],
+      intake_session_status: ["active", "paused", "completed", "cancelled"],
       organization_invitation_status: [
         "pending",
         "accepted",
