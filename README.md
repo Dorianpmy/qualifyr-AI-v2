@@ -2,7 +2,7 @@
 
 Fondation neuve du produit Qualifyr AI. Le produit est pensé autour du **Dossier** : l’IA comprend, le moteur qualifie, l’humain valide.
 
-Cette étape contient l’authentification Supabase complète et une zone privée minimale. Elle ne contient volontairement aucun AI Intake, Playbook, Dossier, Workflow, CRM ou Agent.
+Cette étape contient l’authentification Supabase et la fondation multi-tenant utilisable : organisations, rôles, membres, invitations et onboarding international. Elle ne contient volontairement aucun AI Intake, Playbook, Dossier, Workflow, CRM ou Agent.
 
 ## Stack
 
@@ -30,7 +30,7 @@ npm run dev
 
 La page est disponible sur `http://localhost:3000` et Supabase Studio sur `http://127.0.0.1:55323`. Les ports Supabase `5532x` évitent de perturber un éventuel projet V1 local déjà actif.
 
-Les parcours d’authentification et leur procédure de vérification sont documentés dans [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md).
+Les parcours d’authentification sont documentés dans [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md). Le tenant canonique, la sécurité et l’internationalisation sont détaillés dans [`docs/ORGANIZATIONS_AND_MEMBERSHIPS.md`](docs/ORGANIZATIONS_AND_MEMBERSHIPS.md), [`docs/MULTI_TENANT_SECURITY.md`](docs/MULTI_TENANT_SECURITY.md) et [`docs/INTERNATIONALIZATION_FOUNDATION.md`](docs/INTERNATIONALIZATION_FOUNDATION.md).
 
 ## Scripts
 
@@ -106,7 +106,7 @@ La validation est paresseuse : un build purement statique ne crée aucun client 
 
 ## Multi-tenant et sécurité
 
-La première migration crée seulement `organizations` et `organization_memberships`. Les deux tables activent et forcent RLS. Les utilisateurs authentifiés peuvent uniquement lire l’organisation et les membres des organisations auxquelles ils appartiennent. Aucune écriture publique n’est ouverte tant que les cas d’usage correspondants n’existent pas.
+`Organization` est l’unique tenant canonique. Les organisations, memberships et invitations activent et forcent RLS. Les mutations sensibles utilisent des RPC transactionnels qui dérivent l’identité de `auth.uid()` ; aucune clé privilégiée n’est utilisée par l’application.
 
 Toute future table privée devra contenir un `organization_id` non nul, indexé, référencé vers `organizations`, avec RLS et des politiques testées. Le Proxy rafraîchit la session avec `getClaims()`, mais chaque Server Component, Server Action ou Route Handler sensible devra réautoriser l’accès ; RLS reste la dernière barrière.
 
@@ -126,7 +126,7 @@ Le code de Qualifyr V1 n’était pas présent dans ce workspace. La direction p
 
 ## Prochaines améliorations proposées
 
-1. Configurer un SMTP de production et tester la délivrabilité avant mise en ligne.
+1. Configurer un SMTP de production pour l’authentification et les invitations, puis tester la délivrabilité.
 2. Faire valider les textes juridiques (`LEGAL_REVIEW_REQUIRED`).
 3. Configurer CI sur `npm run check`, le build et les tests Supabase.
 4. Ajouter OAuth, MFA et SSO uniquement dans leurs phases dédiées.

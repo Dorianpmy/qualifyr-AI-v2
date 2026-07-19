@@ -14,6 +14,7 @@ export const signUpSchema = z.strictObject({
   email,
   password,
   passwordConfirmation: z.string().max(128),
+  next: z.string().max(512).optional(),
 }).refine((value) => value.password === value.passwordConfirmation, { path: ["passwordConfirmation"], message: "password_mismatch" });
 export const forgotPasswordSchema = z.strictObject({ email });
 export const resetPasswordSchema = z.strictObject({ password, passwordConfirmation: z.string().max(128) })
@@ -24,5 +25,5 @@ export type SignInInput = z.infer<typeof signInSchema>;
 export type SignUpInput = z.infer<typeof signUpSchema>;
 
 export function formDataObject(formData: FormData, keys: readonly string[]) {
-  return Object.fromEntries(keys.map((key) => [key, formData.get(key)]));
+  return Object.fromEntries(keys.map((key) => [key, formData.get(key) ?? undefined]));
 }

@@ -22,7 +22,7 @@ export async function signInAction(_state: AuthActionState, formData: FormData):
 }
 
 export async function signUpAction(_state: AuthActionState, formData: FormData): Promise<AuthActionState> {
-  const parsed = signUpSchema.safeParse(formDataObject(formData, ["firstName", "lastName", "email", "password", "passwordConfirmation"]));
+  const parsed = signUpSchema.safeParse(formDataObject(formData, ["firstName", "lastName", "email", "password", "passwordConfirmation", "next"]));
   if (!parsed.success) return { status: "error", message: authMessages.common.genericError };
 
   const env = getPublicEnv();
@@ -31,7 +31,7 @@ export async function signUpAction(_state: AuthActionState, formData: FormData):
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
-      emailRedirectTo: `${env.NEXT_PUBLIC_APP_URL}/auth/callback?next=/app`,
+      emailRedirectTo: `${env.NEXT_PUBLIC_APP_URL}/auth/callback?next=${encodeURIComponent(safeInternalPath(parsed.data.next, "/app"))}`,
       data: {
         first_name: parsed.data.firstName,
         last_name: parsed.data.lastName,
@@ -42,7 +42,7 @@ export async function signUpAction(_state: AuthActionState, formData: FormData):
     },
   });
   if (error) return { status: "error", message: authMessages.common.genericError };
-  if (data.session) redirect("/app");
+  if (data.session) redirect(safeInternalPath(parsed.data.next, "/app"));
 
   return { status: "email_confirmation", email: parsed.data.email, maskedEmail: maskEmail(parsed.data.email) };
 }

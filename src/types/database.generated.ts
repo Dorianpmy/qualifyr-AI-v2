@@ -34,23 +34,91 @@ export type Database = {
   }
   public: {
     Tables: {
+      organization_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          email_normalized: string
+          expires_at: string
+          id: string
+          invited_by: string
+          organization_id: string
+          revoked_at: string | null
+          role: Database["public"]["Enums"]["organization_role"]
+          status: Database["public"]["Enums"]["organization_invitation_status"]
+          token_hash: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email_normalized: string
+          expires_at: string
+          id?: string
+          invited_by: string
+          organization_id: string
+          revoked_at?: string | null
+          role: Database["public"]["Enums"]["organization_role"]
+          status?: Database["public"]["Enums"]["organization_invitation_status"]
+          token_hash: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email_normalized?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string
+          organization_id?: string
+          revoked_at?: string | null
+          role?: Database["public"]["Enums"]["organization_role"]
+          status?: Database["public"]["Enums"]["organization_invitation_status"]
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_invitations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_memberships: {
         Row: {
           created_at: string
+          invited_by: string | null
+          joined_at: string
           organization_id: string
+          removed_at: string | null
           role: Database["public"]["Enums"]["organization_role"]
+          status: Database["public"]["Enums"]["organization_membership_status"]
+          updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          invited_by?: string | null
+          joined_at?: string
           organization_id: string
+          removed_at?: string | null
           role?: Database["public"]["Enums"]["organization_role"]
+          status?: Database["public"]["Enums"]["organization_membership_status"]
+          updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
+          invited_by?: string | null
+          joined_at?: string
           organization_id?: string
+          removed_at?: string | null
           role?: Database["public"]["Enums"]["organization_role"]
+          status?: Database["public"]["Enums"]["organization_membership_status"]
+          updated_at?: string
           user_id?: string
         }
         Relationships: [
@@ -65,25 +133,61 @@ export type Database = {
       }
       organizations: {
         Row: {
+          archived_at: string | null
+          business_category: string | null
+          country_code: string | null
           created_at: string
+          created_by: string | null
+          creation_request_id: string | null
+          currency: string | null
           id: string
+          locale: string | null
           name: string
+          onboarding_completed_at: string | null
+          primary_language: string | null
           slug: string
+          team_size_range: string | null
+          timezone: string | null
           updated_at: string
+          version: number
         }
         Insert: {
+          archived_at?: string | null
+          business_category?: string | null
+          country_code?: string | null
           created_at?: string
+          created_by?: string | null
+          creation_request_id?: string | null
+          currency?: string | null
           id?: string
+          locale?: string | null
           name: string
+          onboarding_completed_at?: string | null
+          primary_language?: string | null
           slug: string
+          team_size_range?: string | null
+          timezone?: string | null
           updated_at?: string
+          version?: number
         }
         Update: {
+          archived_at?: string | null
+          business_category?: string | null
+          country_code?: string | null
           created_at?: string
+          created_by?: string | null
+          creation_request_id?: string | null
+          currency?: string | null
           id?: string
+          locale?: string | null
           name?: string
+          onboarding_completed_at?: string | null
+          primary_language?: string | null
           slug?: string
+          team_size_range?: string | null
+          timezone?: string | null
           updated_at?: string
+          version?: number
         }
         Relationships: []
       }
@@ -134,9 +238,77 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      accept_organization_invitation: {
+        Args: { raw_token: string }
+        Returns: {
+          organization_id: string
+          organization_slug: string
+        }[]
+      }
+      create_organization_invitation: {
+        Args: {
+          invitation_expires_at: string
+          invited_email: string
+          invited_role: Database["public"]["Enums"]["organization_role"]
+          target_organization_id: string
+          token_hash_hex: string
+        }
+        Returns: string
+      }
+      create_organization_with_owner: {
+        Args: {
+          request_id: string
+          requested_business_category: string
+          requested_country_code: string
+          requested_currency: string
+          requested_locale: string
+          requested_name: string
+          requested_primary_language: string
+          requested_slug: string
+          requested_team_size_range: string
+          requested_timezone: string
+        }
+        Returns: {
+          organization_id: string
+          organization_slug: string
+        }[]
+      }
+      list_organization_members: {
+        Args: { target_organization_id: string }
+        Returns: {
+          email: string
+          first_name: string
+          joined_at: string
+          last_name: string
+          role: Database["public"]["Enums"]["organization_role"]
+          status: Database["public"]["Enums"]["organization_membership_status"]
+          user_id: string
+        }[]
+      }
+      remove_organization_member: {
+        Args: { target_organization_id: string; target_user_id: string }
+        Returns: undefined
+      }
+      revoke_organization_invitation: {
+        Args: { target_invitation_id: string }
+        Returns: undefined
+      }
+      update_organization_member_role: {
+        Args: {
+          requested_role: Database["public"]["Enums"]["organization_role"]
+          target_organization_id: string
+          target_user_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
+      organization_invitation_status:
+        | "pending"
+        | "accepted"
+        | "expired"
+        | "revoked"
+      organization_membership_status: "active" | "suspended" | "removed"
       organization_role: "owner" | "admin" | "member"
     }
     CompositeTypes: {
@@ -268,6 +440,13 @@ export const Constants = {
   },
   public: {
     Enums: {
+      organization_invitation_status: [
+        "pending",
+        "accepted",
+        "expired",
+        "revoked",
+      ],
+      organization_membership_status: ["active", "suspended", "removed"],
       organization_role: ["owner", "admin", "member"],
     },
   },

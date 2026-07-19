@@ -30,8 +30,9 @@ const buttonVariants = cva(
 );
 
 function Button({ className, variant, size, asChild = false, loading = false, disabled, children, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean; loading?: boolean }) {
-  const Comp = asChild ? Slot.Root : "button";
-  return <Comp data-slot="button" className={cn(buttonVariants({ variant, size, className }))} disabled={disabled || loading} aria-busy={loading || undefined} {...props}>{loading ? <span className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden="true" /> : null}{children}</Comp>;
+  const classes = cn(buttonVariants({ variant, size, className }));
+  if (asChild) return <Slot.Root data-slot="button" className={classes}>{children}</Slot.Root>;
+  return <button data-slot="button" className={classes} disabled={disabled || loading} aria-busy={loading || undefined} {...props}>{loading ? <span className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden="true" /> : null}{children}</button>;
 }
 
 export { Button, buttonVariants };

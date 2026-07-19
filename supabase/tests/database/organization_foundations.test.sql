@@ -28,13 +28,13 @@ select ok(
 select policies_are(
   'public',
   'organizations',
-  array['members can read their organization'],
+  array['active members can read their organization'],
   'organizations exposes only its membership read policy'
 );
 select policies_are(
   'public',
   'organization_memberships',
-  array['members can read memberships in their organization'],
+  array['active members can read organization memberships'],
   'memberships expose only their tenant read policy'
 );
 
