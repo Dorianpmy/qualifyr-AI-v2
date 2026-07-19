@@ -46,12 +46,13 @@ export async function getServiceRequestHistory(organizationId:string,serviceRequ
 
 export async function getServiceRequestDashboardData(organizationId:string){
   const supabase=await createClient();
-  const [activeResult,attentionResult,recentResult]=await Promise.all([
+  const [activeResult,incompleteResult,reviewResult,recentResult]=await Promise.all([
     supabase.from("service_requests").select("id",{count:"exact",head:true}).eq("organization_id",organizationId).is("archived_at",null).neq("status","closed"),
-    supabase.from("service_requests").select("id",{count:"exact",head:true}).eq("organization_id",organizationId).is("archived_at",null).in("status",["new","incomplete","needs_review"]),
+    supabase.from("service_requests").select("id",{count:"exact",head:true}).eq("organization_id",organizationId).is("archived_at",null).eq("status","incomplete"),
+    supabase.from("service_requests").select("id",{count:"exact",head:true}).eq("organization_id",organizationId).is("archived_at",null).eq("status","needs_review"),
     supabase.from("service_requests").select("reference_code,title,status,updated_at,assigned_user_id").eq("organization_id",organizationId).order("updated_at",{ascending:false}).limit(5),
   ]);
-  if(activeResult.error||attentionResult.error||recentResult.error) throw new Error("dashboard_unavailable");
+  if(activeResult.error||incompleteResult.error||reviewResult.error||recentResult.error) throw new Error("dashboard_unavailable");
   const members=await listOrganizationMembers(organizationId);
-  return {activeCount:activeResult.count??0,attentionCount:attentionResult.count??0,recent:(recentResult.data??[]).map(item=>({referenceCode:item.reference_code,title:item.title,status:item.status,updatedAt:item.updated_at,assigneeName:(()=>{const m=members.find(member=>member.user_id===item.assigned_user_id);return m?[m.first_name,m.last_name].filter(Boolean).join(" ")||"Membre Qualifyr":null;})()}))};
+  return {activeCount:activeResult.count??0,incompleteCount:incompleteResult.count??0,reviewCount:reviewResult.count??0,recent:(recentResult.data??[]).map(item=>({referenceCode:item.reference_code,title:item.title,status:item.status,updatedAt:item.updated_at,assigneeName:(()=>{const m=members.find(member=>member.user_id===item.assigned_user_id);return m?[m.first_name,m.last_name].filter(Boolean).join(" ")||"Membre Qualifyr":null;})()}))};
 }

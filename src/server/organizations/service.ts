@@ -52,8 +52,7 @@ export async function requireOrganizationRole(slug: string, allowed: readonly Or
 export async function redirectToOrganizationEntry() {
   const organizations = await listOrganizationsForUser();
   if (organizations.length === 0) redirect("/app/onboarding");
-  if (organizations.length === 1) redirect(`/app/${organizations[0]!.slug}`);
-  return organizations;
+  redirect(`/app/${organizations[0]!.slug}`);
 }
 
 export async function listOrganizationMembers(organizationId: string) {

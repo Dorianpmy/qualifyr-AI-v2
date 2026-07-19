@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { Select } from "@/components/ui/input";
 import type { OrganizationSummary } from "@/server/organizations/service";
 
-export function OrganizationSwitcher({ organizations, currentSlug }: { organizations: OrganizationSummary[]; currentSlug?: string }) {
+export function OrganizationSwitcher({ organizations, currentSlug, compact = false }: { organizations: OrganizationSummary[]; currentSlug?: string; compact?: boolean }) {
   const router = useRouter();
   return (
     <label className="grid gap-1 text-xs font-semibold text-muted-foreground">
-      Organisation active
+      <span className={compact ? "sr-only" : undefined}>Organisation active</span>
       <Select aria-label="Organisation active" value={currentSlug ?? ""} onChange={(event) => {
         const slug = event.target.value;
         if (slug === "__new__") router.push("/app/onboarding");

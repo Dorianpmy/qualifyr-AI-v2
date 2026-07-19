@@ -66,11 +66,11 @@ export function getNextRecommendedAction(input: ReadinessInput, organizationSlug
     label: "Gérer l’équipe",
   };
   return {
-    title: "Votre espace est prêt pour la prochaine étape",
+    title: "Consultez les Dossiers de l’organisation",
     description: input.profileComplete
-      ? "Les premiers Dossiers seront disponibles lors de l’activation du parcours de qualification."
+      ? "Retrouvez les demandes récentes, incomplètes ou en attente de validation."
       : "Votre profil reste facultatif et pourra être complété dans une prochaine amélioration.",
-    href: `/app/${organizationSlug}/membres`,
-    label: "Consulter l’équipe",
+    href: `/app/${organizationSlug}/dossiers`,
+    label: "Voir les Dossiers",
   };
 }

@@ -46,7 +46,7 @@ export function OnboardingForm({ requestId }: { requestId: string }) {
       <section className={step === 3 ? "grid gap-4" : "hidden"} aria-hidden={step !== 3}>
         <div className="grid gap-3 rounded-[var(--radius-lg)] border bg-muted/35 p-5 text-sm"><p><strong>{messages.common.organization} :</strong> {name}</p><p><strong>{messages.onboarding.country} :</strong> {settings.label}</p><p><strong>{messages.onboarding.language} :</strong> {regional.primaryLanguage}</p><p><strong>{messages.onboarding.currency} :</strong> {regional.currency}</p><p><strong>{messages.onboarding.timezone} :</strong> {regional.timezone}</p><p><strong>Rôle :</strong> {messages.onboarding.ownerRole}</p></div>
       </section>
-      <div className="flex flex-wrap justify-between gap-3"><Button type="button" variant="ghost" disabled={step === 1 || pending} onClick={() => setStep((value) => Math.max(1, value - 1))}>{messages.onboarding.previous}</Button>{step < 3 ? <Button type="button" disabled={!name.trim()} onClick={() => setStep((value) => Math.min(3, value + 1))}>{messages.onboarding.next}</Button> : <Button type="submit" loading={pending}>{messages.onboarding.submit}</Button>}</div>
+      <div className="flex flex-wrap justify-between gap-3"><Button type="button" variant="ghost" disabled={step === 1 || pending} onClick={(event) => { event.preventDefault(); setStep((value) => Math.max(1, value - 1)); }}>{messages.onboarding.previous}</Button>{step < 3 ? <Button type="button" disabled={!name.trim()} onClick={(event) => { event.preventDefault(); setStep((value) => Math.min(3, value + 1)); }}>{messages.onboarding.next}</Button> : <Button type="submit" loading={pending}>{messages.onboarding.submit}</Button>}</div>
     </form></CardContent>
   </Card>;
 }

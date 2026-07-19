@@ -32,6 +32,9 @@ describe("organization dashboard readiness", () => {
   it("returns only deterministic actions to existing destinations", () => {
     expect(getNextRecommendedAction({ ...complete, regionalSettingsComplete: false }, "acme").href).toBe("#organisation");
     expect(getNextRecommendedAction({ ...complete, hasPendingInvitation: false, activeMembersCount: 1 }, "acme").title).toBe("Ajoutez un collaborateur");
-    expect(getNextRecommendedAction({ ...complete, role: "member", hasPendingInvitation: false, activeMembersCount: 1 }, "acme").title).toBe("Votre espace est prêt pour la prochaine étape");
+    expect(getNextRecommendedAction({ ...complete, role: "member", hasPendingInvitation: false, activeMembersCount: 1 }, "acme")).toMatchObject({
+      title: "Consultez les Dossiers de l’organisation",
+      href: "/app/acme/dossiers",
+    });
   });
 });
