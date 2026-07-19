@@ -7,6 +7,9 @@ export type Plan = {
   name: string;
   audience: string;
   description: string;
+  monthlyPrice: number;
+  annualPrice?: number;
+  startingAt?: boolean;
   features: readonly string[];
   highlighted?: boolean;
 };
@@ -17,14 +20,18 @@ export const plans: readonly Plan[] = [
     name: "Essentiel",
     audience: "Pour structurer les premières demandes",
     description: "Le socle Qualifyr pour une petite équipe de services.",
-    features: ["Dossiers centralisés", "Services configurables", "Qualification déterministe"],
+    monthlyPrice: 49,
+    annualPrice: 490,
+    features: ["3 utilisateurs inclus", "100 Dossiers par mois", "1 Playbook actif", "AI Intake limité"],
   },
   {
     id: "professional",
     name: "Professionnel",
     audience: "Pour industrialiser la qualification",
     description: "Un espace complet pour les équipes qui traitent davantage de demandes.",
-    features: ["Tout Essentiel", "Playbooks avancés", "AI Intake contrôlé"],
+    monthlyPrice: 129,
+    annualPrice: 1290,
+    features: ["10 utilisateurs inclus", "500 Dossiers par mois", "Playbooks illimités", "AI Intake avancé et exports"],
     highlighted: true,
   },
   {
@@ -32,7 +39,9 @@ export const plans: readonly Plan[] = [
     name: "Entreprise",
     audience: "Pour les organisations aux besoins spécifiques",
     description: "Un accompagnement adapté aux déploiements plus exigeants.",
-    features: ["Tout Professionnel", "Accompagnement dédié", "Déploiement sur mesure"],
+    monthlyPrice: 349,
+    startingAt: true,
+    features: ["Utilisateurs et volumes adaptés", "Tout Professionnel", "Accompagnement dédié", "Sécurité et intégrations spécifiques"],
   },
 ] as const;
 
