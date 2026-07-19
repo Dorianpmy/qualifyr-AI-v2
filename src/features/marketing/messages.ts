@@ -1,0 +1,93 @@
+export const marketingMessages = {
+  navigation: {
+    product: "Produit",
+    useCases: "Métiers",
+    security: "Sécurité",
+    pricing: "Forfaits",
+  },
+  hero: {
+    eyebrow: "La qualification opérationnelle, enfin structurée",
+    title: "Chaque demande devient un Dossier clair, complet et prêt à traiter.",
+    description: "Qualifyr AI transforme les messages, emails et demandes libres en informations vérifiables, applique vos règles et indique précisément ce qu’il reste à demander.",
+    primaryAction: "Créer mon compte",
+    secondaryAction: "Voir comment ça fonctionne",
+    reassurance: "Accès de lancement sans carte bancaire",
+  },
+  problem: {
+    eyebrow: "Le problème",
+    title: "Une demande incomplète coûte du temps avant même l’intervention.",
+    description: "Informations manquantes, échanges dispersés, mauvaise urgence ou documents oubliés : votre équipe doit reconstituer le besoin avant de pouvoir agir.",
+    pains: [
+      "Des allers-retours pour obtenir les informations essentielles",
+      "Des critères différents selon la personne qui traite la demande",
+      "Des décisions difficiles à expliquer ou à transmettre",
+    ],
+  },
+  demo: {
+    eyebrow: "Une démonstration simple",
+    title: "De la demande libre au Dossier exploitable",
+    description: "L’IA propose. Vos règles décident. Votre équipe garde le dernier mot.",
+    incomingLabel: "Demande reçue",
+    incomingText: "Bonjour, notre climatisation ne fonctionne plus depuis hier dans nos bureaux de Lyon. Nous avons une fuite et environ 30 personnes sur place.",
+    extractedLabel: "Informations comprises",
+    extracted: ["Climatisation en panne", "Lyon · site occupé", "Fuite signalée", "30 personnes concernées"],
+    missingLabel: "À confirmer avant intervention",
+    missing: ["Référence de l’équipement", "Photo de la fuite", "Créneau d’accès au site"],
+    readyLabel: "Dossier prêt à valider",
+  },
+  outcomes: {
+    eyebrow: "Ce que Qualifyr change",
+    title: "Moins de collecte. Plus de décisions utiles.",
+    items: [
+      { title: "Comprendre", description: "Les demandes libres sont transformées en faits structurés avec leur niveau de certitude." },
+      { title: "Qualifier", description: "Les Playbooks appliquent les mêmes critères à chaque demande, sans décision opaque." },
+      { title: "Compléter", description: "Qualifyr identifie les informations manquantes et propose la prochaine question utile." },
+      { title: "Valider", description: "Un humain contrôle le résultat avant toute utilisation opérationnelle." },
+    ],
+  },
+  audiences: {
+    eyebrow: "Conçu pour les entreprises de services",
+    title: "Un même moteur, adapté à vos demandes métier",
+    items: ["Maintenance et dépannage", "Installation et travaux", "Services techniques", "Agences et cabinets", "Prestations sur site", "Support opérationnel"],
+  },
+  difference: {
+    eyebrow: "Une catégorie différente",
+    title: "Qualifyr ne remplace pas vos outils. Il prépare ce qu’ils doivent recevoir.",
+    items: [
+      { title: "Pas un CRM", description: "Le cœur du produit est le Dossier qualifié, pas le suivi d’un pipeline commercial." },
+      { title: "Pas un formulaire", description: "Le prospect peut s’exprimer librement : le système comprend puis demande uniquement ce qui manque." },
+      { title: "Pas un chatbot autonome", description: "Les règles déterministes et la validation humaine restent prioritaires sur l’IA." },
+    ],
+  },
+  trust: {
+    eyebrow: "Contrôle et confiance",
+    title: "Une IA encadrée dès la conception",
+    items: [
+      "Données privées séparées par organisation",
+      "Accès contrôlés côté serveur",
+      "Règles de qualification explicables",
+      "Aucune qualification finale sans validation humaine",
+      "Historique des décisions et informations conservé",
+      "Architecture préparée pour les marchés européens",
+    ],
+  },
+  faq: {
+    eyebrow: "Questions fréquentes",
+    title: "Avant de commencer",
+    items: [
+      { question: "Dois-je remplacer mon CRM ?", answer: "Non. Qualifyr prépare des Dossiers complets et structurés. Il pourra ensuite transmettre ces informations aux outils déjà utilisés par votre équipe." },
+      { question: "L’IA décide-t-elle seule ?", answer: "Non. L’IA comprend et propose. Le moteur applique les règles du Playbook, puis un humain contrôle et valide le Dossier." },
+      { question: "Puis-je adapter les critères à mon activité ?", answer: "Oui. Les Services et Playbooks permettent de définir les informations attendues, les règles obligatoires et les critères de qualification." },
+      { question: "Puis-je créer un compte sans carte bancaire ?", answer: "Oui. L’accès de lancement ne demande aucune carte bancaire. Le forfait choisi est simplement présélectionné pour préparer la future facturation." },
+      { question: "Que se passe-t-il lorsqu’une information manque ?", answer: "Le Dossier reste explicitement incomplet. Qualifyr indique la prochaine question utile au lieu d’inventer une réponse." },
+      { question: "Mes collaborateurs voient-ils les autres entreprises ?", answer: "Non. Les ressources privées sont rattachées à une organisation et protégées par des contrôles d’accès côté serveur et en base de données." },
+    ],
+  },
+  finalCta: {
+    eyebrow: "Commencez avec une demande réelle",
+    title: "Voyez ce que Qualifyr peut clarifier pour votre équipe.",
+    description: "Créez votre espace, configurez votre organisation et transformez votre première demande en Dossier structuré.",
+    action: "Créer mon espace",
+    contact: "Parler de mon besoin",
+  },
+} as const;

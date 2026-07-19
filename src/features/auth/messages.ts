@@ -26,8 +26,8 @@ export const authMessages = {
   signUp: {
     title: "Créer votre compte",
     description: "Quelques informations suffisent pour sécuriser votre accès.",
-    selectedPlan: "Vous avez choisi le forfait",
-    noCharge: "Aucun paiement ne sera demandé pendant la préparation de la facturation.",
+    selectedPlan: "Votre forfait présélectionné :",
+    noCharge: "Créez votre compte sans carte bancaire.",
     submit: "Créer mon compte",
     existing: "Vous avez déjà un compte ?",
     signIn: "Se connecter",

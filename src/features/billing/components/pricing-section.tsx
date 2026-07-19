@@ -53,7 +53,7 @@ export function PricingSection() {
             <CardFooter>
               <div className="grid w-full gap-2">
                 <Button asChild size="lg" variant={plan.highlighted ? "default" : "glass"} className="w-full">
-                  <Link href={`/inscription?plan=${plan.id}`}>{messages.choose}</Link>
+                  {plan.id === "enterprise" ? <a href="mailto:qualifyragence@gmail.com?subject=Forfait Entreprise Qualifyr AI">Parler à l’équipe</a> : <Link href={`/inscription?plan=${plan.id}`}>{messages.choose}</Link>}
                 </Button>
                 <p className="text-center text-[11px] text-muted-foreground">{messages.accountFirst}</p>
               </div>

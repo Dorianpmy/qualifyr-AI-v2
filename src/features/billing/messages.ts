@@ -18,7 +18,7 @@ export const billingMessages = {
     annualPrefix: "ou",
     annualSuffix: "HT/an · 2 mois offerts",
     accountFirst: "Création du compte sans carte bancaire",
-    choose: "Choisir ce forfait",
+    choose: "Créer mon compte",
     recommended: "Recommandé",
   },
   footer: "Prix hors taxes. Le paiement sera demandé uniquement après l’activation sécurisée de la facturation.",
