@@ -22,3 +22,9 @@ Les codes CZ, SK, HU, BG, HR, SI, EE, LV et LT sont identifiés comme extensions
 Les formats `fr-FR`, `fr-BE`, `fr-CH`, `pl-PL` et `ro-RO` sont couverts. Les tests PostgreSQL créent des organisations françaises, polonaises et roumaines et vérifient leur isolation.
 
 Aucune logique fiscale, juridique locale ou traduction complète n’est incluse.
+
+## Dashboard
+
+Le dashboard utilise la locale et le fuseau de l’organisation pour la date et la salutation calculées côté serveur. `resolveIntlContext` remplace une locale ou un fuseau invalide par `fr-FR` et `UTC`, évitant les erreurs de rendu et les divergences d’hydratation. Les noms de pays passent par `Intl.DisplayNames`.
+
+Les formats `fr-FR`, `fr-BE`, `fr-CH`, `pl-PL` et `ro-RO` restent couverts par les tests, avec EUR, CHF, PLN et RON selon la configuration du marché.

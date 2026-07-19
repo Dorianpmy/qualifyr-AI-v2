@@ -34,3 +34,32 @@ export function formatNumber(value: number, locale: string = i18nConfig.defaultL
 export function formatCurrency(value: number, currency: string, locale: string = i18nConfig.defaultLocale) {
   return new Intl.NumberFormat(locale, { style: "currency", currency }).format(value);
 }
+
+export function resolveIntlContext(locale?: string | null, timezone?: string | null) {
+  let safeLocale: string = i18nConfig.defaultLocale;
+  try {
+    if (locale && Intl.DateTimeFormat.supportedLocalesOf([locale]).length) safeLocale = locale;
+  } catch {
+    safeLocale = i18nConfig.defaultLocale;
+  }
+  let safeTimezone = timezone || i18nConfig.defaultTimezone;
+  try {
+    new Intl.DateTimeFormat(safeLocale, { timeZone: safeTimezone }).format();
+  } catch {
+    safeTimezone = i18nConfig.defaultTimezone;
+  }
+  return { locale: safeLocale, timezone: safeTimezone };
+}
+
+export function formatOrganizationDate(value: Date | string, locale?: string | null, timezone?: string | null) {
+  const context = resolveIntlContext(locale, timezone);
+  return formatDate(value, context.locale, context.timezone);
+}
+
+export function getOrganizationGreeting(value: Date, locale?: string | null, timezone?: string | null) {
+  const context = resolveIntlContext(locale, timezone);
+  const hour = Number(new Intl.DateTimeFormat("en", { hour: "2-digit", hourCycle: "h23", timeZone: context.timezone }).format(value));
+  if (hour < 12) return "Bonjour";
+  if (hour < 18) return "Bon après-midi";
+  return "Bonsoir";
+}

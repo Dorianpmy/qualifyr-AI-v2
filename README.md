@@ -2,7 +2,7 @@
 
 Fondation neuve du produit Qualifyr AI. Le produit est pensé autour du **Dossier** : l’IA comprend, le moteur qualifie, l’humain valide.
 
-Cette étape contient l’authentification Supabase et la fondation multi-tenant utilisable : organisations, rôles, membres, invitations et onboarding international. Elle ne contient volontairement aucun AI Intake, Playbook, Dossier, Workflow, CRM ou Agent.
+Cette étape contient l’authentification Supabase, la fondation multi-tenant et un dashboard d’organisation réel : paramètres régionaux, configuration, membres et invitations autorisées. Elle ne contient volontairement aucun AI Intake, Playbook, Dossier, Workflow, CRM ou Agent.
 
 ## Stack
 
@@ -30,7 +30,7 @@ npm run dev
 
 La page est disponible sur `http://localhost:3000` et Supabase Studio sur `http://127.0.0.1:55323`. Les ports Supabase `5532x` évitent de perturber un éventuel projet V1 local déjà actif.
 
-Les parcours d’authentification sont documentés dans [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md). Le tenant canonique, la sécurité et l’internationalisation sont détaillés dans [`docs/ORGANIZATIONS_AND_MEMBERSHIPS.md`](docs/ORGANIZATIONS_AND_MEMBERSHIPS.md), [`docs/MULTI_TENANT_SECURITY.md`](docs/MULTI_TENANT_SECURITY.md) et [`docs/INTERNATIONALIZATION_FOUNDATION.md`](docs/INTERNATIONALIZATION_FOUNDATION.md).
+Les parcours d’authentification sont documentés dans [`docs/AUTHENTICATION.md`](docs/AUTHENTICATION.md). Le tenant canonique, la sécurité, l’internationalisation et le dashboard sont détaillés dans [`docs/ORGANIZATIONS_AND_MEMBERSHIPS.md`](docs/ORGANIZATIONS_AND_MEMBERSHIPS.md), [`docs/MULTI_TENANT_SECURITY.md`](docs/MULTI_TENANT_SECURITY.md), [`docs/INTERNATIONALIZATION_FOUNDATION.md`](docs/INTERNATIONALIZATION_FOUNDATION.md) et [`docs/ORGANIZATION_DASHBOARD.md`](docs/ORGANIZATION_DASHBOARD.md).
 
 ## Scripts
 
@@ -122,7 +122,7 @@ Le code de Qualifyr V1 n’était pas présent dans ce workspace. La direction p
 - Pas de client Supabase global : chaque client serveur est créé à la demande avec le cookie store de la requête.
 - Pas d’appel IA réel : `DisabledAiProvider` échoue explicitement et empêche les appels accidentels.
 - Pas de `service_role` côté navigateur : seules les clés publiables peuvent être exposées.
-- Pas de dashboard fictif : la route racine présente uniquement l’état du socle.
+- Pas de dashboard fictif : la route d’organisation agrège uniquement des données réelles dans un DTO serveur minimisé et scoppé.
 
 ## Prochaines améliorations proposées
 

@@ -23,6 +23,12 @@ La création possède une clé d’idempotence unique par créateur. L’accepta
 
 La clé publiable est utilisée avec RLS. Aucune clé `service_role`/secrète n’est créée ou envoyée au navigateur.
 
+## Dashboard privé
+
+Le layout `/app/[organizationSlug]` résout l’organisation et le membership actif avant de rendre le shell. `getOrganizationDashboard` réutilise ce contrôle, scope chaque lecture par l’organisation autorisée et réduit le DTO selon le rôle. Le slug, le sélecteur et la navigation ne sont jamais des autorisations.
+
+Le dashboard ne possède aucun cache partagé. Les invitations ne sont pas interrogées pour un membre ordinaire ; les managers reçoivent uniquement un compteur, jamais les tokens ou le détail des destinataires. Les aperçus d’équipe excluent les emails.
+
 ## Tests A/B
 
 Les tests pgTAP créent deux organisations, leurs propriétaires et membres, puis vérifient l’impossibilité de lire, inviter, modifier ou retirer au-delà de la frontière. Ils couvrent aussi double soumission, rôles, dernier propriétaire, token hashé, expiration, email différent, usage unique et perte d’accès après retrait.
