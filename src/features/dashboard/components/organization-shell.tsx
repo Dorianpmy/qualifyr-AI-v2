@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FolderKanban, Home, LogOut, Menu, Plus, Users } from "lucide-react";
+import { BookOpenCheck, BriefcaseBusiness, FolderKanban, Home, LogOut, Menu, Plus, Users } from "lucide-react";
 
 import { BrandMark } from "@/components/ui/brand-mark";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,8 @@ function Navigation({ slug, pathname, mobile = false }: { slug: string; pathname
   const items = [
     { href: `/app/${slug}`, label: messages.navigation.home, icon: Home, exact: true },
     { href: `/app/${slug}/dossiers`, label: messages.navigation.dossiers, icon: FolderKanban, exact: false },
+    { href: `/app/${slug}/services`, label: messages.navigation.services, icon: BriefcaseBusiness, exact: false },
+    { href: `/app/${slug}/playbooks`, label: messages.navigation.playbooks, icon: BookOpenCheck, exact: false },
     { href: `/app/${slug}/membres`, label: messages.navigation.members, icon: Users, exact: false },
   ];
   return <nav aria-label="Navigation de l’organisation" className="grid gap-2">{items.map((item) => {

@@ -1,0 +1,20 @@
+export const playbookFieldTypes = ["text", "textarea", "number", "date", "select", "email", "phone", "country", "city", "postal_code"] as const;
+export type PlaybookFieldType = (typeof playbookFieldTypes)[number];
+export type PlaybookField = { key: string; label: string; type: PlaybookFieldType; required: boolean; question: string };
+export type PlaybookProof = { key: string; label: string; minimum: number };
+export type PlaybookRule = { type: "service_allowed" | "coverage_area" | "required_field" | "required_photo" | "contact_available" | "human_validation" };
+export type PlaybookSchema = { fields: PlaybookField[]; proofs: PlaybookProof[]; rules: PlaybookRule[]; nextAction: string };
+export type QualificationStatus = "incomplete" | "needs_review" | "qualified";
+export type QualificationRuleResult = { rule: string; label: string };
+export type QualificationOutput = {
+  requiredFieldsCompleted: number;
+  requiredFieldsTotal: number;
+  proofsReceived: number;
+  proofsExpected: number;
+  missingInformation: Array<{ key: string; label: string; type: "field" | "proof" }>;
+  passedRules: QualificationRuleResult[];
+  failedRules: QualificationRuleResult[];
+  humanValidationRequired: true;
+  recommendedStatus: Exclude<QualificationStatus, "qualified">;
+  nextAction: string;
+};

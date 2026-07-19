@@ -1,0 +1,1 @@
+export const playbookMessages={statuses:{draft:"Brouillon",active:"Actif",archived:"Archivé"},versionStatuses:{draft:"Brouillon",published:"Publiée"},qualification:{incomplete:"Incomplet",needs_review:"À valider",qualified:"Qualifié"}} as const;

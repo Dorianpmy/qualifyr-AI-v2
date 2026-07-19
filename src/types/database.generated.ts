@@ -34,6 +34,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      coverage_areas: {
+        Row: {
+          area_type: Database["public"]["Enums"]["coverage_area_type"]
+          country_code: string
+          created_at: string
+          created_by: string
+          id: string
+          organization_id: string
+          service_definition_id: string
+          value: string
+        }
+        Insert: {
+          area_type: Database["public"]["Enums"]["coverage_area_type"]
+          country_code: string
+          created_at?: string
+          created_by: string
+          id?: string
+          organization_id: string
+          service_definition_id: string
+          value: string
+        }
+        Update: {
+          area_type?: Database["public"]["Enums"]["coverage_area_type"]
+          country_code?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          organization_id?: string
+          service_definition_id?: string
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coverage_areas_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coverage_areas_organization_id_service_definition_id_fkey"
+            columns: ["organization_id", "service_definition_id"]
+            isOneToOne: false
+            referencedRelation: "service_definitions"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       organization_invitations: {
         Row: {
           accepted_at: string | null
@@ -191,6 +239,205 @@ export type Database = {
         }
         Relationships: []
       }
+      playbook_audit_events: {
+        Row: {
+          actor_user_id: string
+          created_at: string
+          event_type: Database["public"]["Enums"]["playbook_audit_event_type"]
+          id: string
+          metadata: Json
+          organization_id: string
+          playbook_id: string | null
+          playbook_version_id: string | null
+          service_definition_id: string | null
+          service_request_id: string | null
+        }
+        Insert: {
+          actor_user_id: string
+          created_at?: string
+          event_type: Database["public"]["Enums"]["playbook_audit_event_type"]
+          id?: string
+          metadata?: Json
+          organization_id: string
+          playbook_id?: string | null
+          playbook_version_id?: string | null
+          service_definition_id?: string | null
+          service_request_id?: string | null
+        }
+        Update: {
+          actor_user_id?: string
+          created_at?: string
+          event_type?: Database["public"]["Enums"]["playbook_audit_event_type"]
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          playbook_id?: string | null
+          playbook_version_id?: string | null
+          service_definition_id?: string | null
+          service_request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "playbook_audit_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "playbook_audit_events_organization_id_playbook_id_fkey"
+            columns: ["organization_id", "playbook_id"]
+            isOneToOne: false
+            referencedRelation: "playbooks"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "playbook_audit_events_organization_id_playbook_version_id_fkey"
+            columns: ["organization_id", "playbook_version_id"]
+            isOneToOne: false
+            referencedRelation: "playbook_versions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "playbook_audit_events_organization_id_service_definition_i_fkey"
+            columns: ["organization_id", "service_definition_id"]
+            isOneToOne: false
+            referencedRelation: "service_definitions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "playbook_audit_events_organization_id_service_request_id_fkey"
+            columns: ["organization_id", "service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      playbook_versions: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          lock_version: number
+          organization_id: string
+          playbook_id: string
+          published_at: string | null
+          published_by: string | null
+          schema_definition: Json
+          status: Database["public"]["Enums"]["playbook_version_status"]
+          version_number: number
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          lock_version?: number
+          organization_id: string
+          playbook_id: string
+          published_at?: string | null
+          published_by?: string | null
+          schema_definition: Json
+          status?: Database["public"]["Enums"]["playbook_version_status"]
+          version_number: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          lock_version?: number
+          organization_id?: string
+          playbook_id?: string
+          published_at?: string | null
+          published_by?: string | null
+          schema_definition?: Json
+          status?: Database["public"]["Enums"]["playbook_version_status"]
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "playbook_versions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "playbook_versions_organization_id_playbook_id_fkey"
+            columns: ["organization_id", "playbook_id"]
+            isOneToOne: false
+            referencedRelation: "playbooks"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      playbooks: {
+        Row: {
+          active_version_id: string | null
+          code: string
+          created_at: string
+          created_by: string
+          creation_request_id: string
+          description: string | null
+          id: string
+          name: string
+          organization_id: string
+          service_definition_id: string
+          status: Database["public"]["Enums"]["playbook_status"]
+          updated_at: string
+        }
+        Insert: {
+          active_version_id?: string | null
+          code: string
+          created_at?: string
+          created_by: string
+          creation_request_id: string
+          description?: string | null
+          id?: string
+          name: string
+          organization_id: string
+          service_definition_id: string
+          status?: Database["public"]["Enums"]["playbook_status"]
+          updated_at?: string
+        }
+        Update: {
+          active_version_id?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string
+          creation_request_id?: string
+          description?: string | null
+          id?: string
+          name?: string
+          organization_id?: string
+          service_definition_id?: string
+          status?: Database["public"]["Enums"]["playbook_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "playbooks_organization_id_active_version_id_fkey"
+            columns: ["organization_id", "active_version_id"]
+            isOneToOne: false
+            referencedRelation: "playbook_versions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "playbooks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "playbooks_organization_id_service_definition_id_fkey"
+            columns: ["organization_id", "service_definition_id"]
+            isOneToOne: false
+            referencedRelation: "service_definitions"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -232,6 +479,147 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      qualification_results: {
+        Row: {
+          evaluated_at: string
+          evaluated_by: string
+          evaluation_version: number
+          evidence_values: Json
+          failed_rules: Json
+          field_values: Json
+          human_validation_required: boolean
+          id: string
+          missing_information: Json
+          next_action: string
+          organization_id: string
+          passed_rules: Json
+          playbook_version_id: string
+          proofs_expected: number
+          proofs_received: number
+          recommended_status: Database["public"]["Enums"]["qualification_recommendation"]
+          required_fields_completed: number
+          required_fields_total: number
+          service_request_id: string
+          validated_at: string | null
+          validated_by: string | null
+        }
+        Insert: {
+          evaluated_at?: string
+          evaluated_by: string
+          evaluation_version?: number
+          evidence_values?: Json
+          failed_rules?: Json
+          field_values?: Json
+          human_validation_required?: boolean
+          id?: string
+          missing_information?: Json
+          next_action: string
+          organization_id: string
+          passed_rules?: Json
+          playbook_version_id: string
+          proofs_expected?: number
+          proofs_received?: number
+          recommended_status?: Database["public"]["Enums"]["qualification_recommendation"]
+          required_fields_completed?: number
+          required_fields_total?: number
+          service_request_id: string
+          validated_at?: string | null
+          validated_by?: string | null
+        }
+        Update: {
+          evaluated_at?: string
+          evaluated_by?: string
+          evaluation_version?: number
+          evidence_values?: Json
+          failed_rules?: Json
+          field_values?: Json
+          human_validation_required?: boolean
+          id?: string
+          missing_information?: Json
+          next_action?: string
+          organization_id?: string
+          passed_rules?: Json
+          playbook_version_id?: string
+          proofs_expected?: number
+          proofs_received?: number
+          recommended_status?: Database["public"]["Enums"]["qualification_recommendation"]
+          required_fields_completed?: number
+          required_fields_total?: number
+          service_request_id?: string
+          validated_at?: string | null
+          validated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qualification_results_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qualification_results_organization_id_playbook_version_id_fkey"
+            columns: ["organization_id", "playbook_version_id"]
+            isOneToOne: false
+            referencedRelation: "playbook_versions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "qualification_results_organization_id_service_request_id_fkey"
+            columns: ["organization_id", "service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      service_definitions: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string
+          creation_request_id: string
+          description: string | null
+          id: string
+          name: string
+          organization_id: string
+          status: Database["public"]["Enums"]["service_definition_status"]
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by: string
+          creation_request_id: string
+          description?: string | null
+          id?: string
+          name: string
+          organization_id: string
+          status?: Database["public"]["Enums"]["service_definition_status"]
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string
+          creation_request_id?: string
+          description?: string | null
+          id?: string
+          name?: string
+          organization_id?: string
+          status?: Database["public"]["Enums"]["service_definition_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_definitions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       service_request_events: {
         Row: {
@@ -293,6 +681,7 @@ export type Database = {
           lock_version: number
           organization_id: string
           original_request: string
+          playbook_version_id: string | null
           postal_code: string
           preferred_contact_channel: Database["public"]["Enums"]["preferred_contact_channel"]
           reference_code: string
@@ -301,6 +690,7 @@ export type Database = {
           requester_last_name: string | null
           requester_locale: string | null
           requester_phone: string | null
+          service_definition_id: string | null
           service_label: string
           source: Database["public"]["Enums"]["service_request_source"]
           status: Database["public"]["Enums"]["service_request_status"]
@@ -322,6 +712,7 @@ export type Database = {
           lock_version?: number
           organization_id: string
           original_request: string
+          playbook_version_id?: string | null
           postal_code: string
           preferred_contact_channel?: Database["public"]["Enums"]["preferred_contact_channel"]
           reference_code: string
@@ -330,6 +721,7 @@ export type Database = {
           requester_last_name?: string | null
           requester_locale?: string | null
           requester_phone?: string | null
+          service_definition_id?: string | null
           service_label: string
           source?: Database["public"]["Enums"]["service_request_source"]
           status?: Database["public"]["Enums"]["service_request_status"]
@@ -351,6 +743,7 @@ export type Database = {
           lock_version?: number
           organization_id?: string
           original_request?: string
+          playbook_version_id?: string | null
           postal_code?: string
           preferred_contact_channel?: Database["public"]["Enums"]["preferred_contact_channel"]
           reference_code?: string
@@ -359,6 +752,7 @@ export type Database = {
           requester_last_name?: string | null
           requester_locale?: string | null
           requester_phone?: string | null
+          service_definition_id?: string | null
           service_label?: string
           source?: Database["public"]["Enums"]["service_request_source"]
           status?: Database["public"]["Enums"]["service_request_status"]
@@ -374,6 +768,20 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "service_requests_organization_id_playbook_version_id_fkey"
+            columns: ["organization_id", "playbook_version_id"]
+            isOneToOne: false
+            referencedRelation: "playbook_versions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "service_requests_organization_id_service_definition_id_fkey"
+            columns: ["organization_id", "service_definition_id"]
+            isOneToOne: false
+            referencedRelation: "service_definitions"
+            referencedColumns: ["organization_id", "id"]
+          },
         ]
       }
     }
@@ -388,6 +796,16 @@ export type Database = {
           organization_slug: string
         }[]
       }
+      add_coverage_area: {
+        Args: {
+          requested_country_code: string
+          requested_type: Database["public"]["Enums"]["coverage_area_type"]
+          requested_value: string
+          target_organization_id: string
+          target_service_id: string
+        }
+        Returns: string
+      }
       assign_service_request: {
         Args: {
           expected_version: number
@@ -396,6 +814,23 @@ export type Database = {
           target_reference: string
         }
         Returns: number
+      }
+      associate_dossier_playbook: {
+        Args: {
+          target_organization_id: string
+          target_reference: string
+          target_version_id: string
+        }
+        Returns: undefined
+      }
+      calculate_dossier_qualification: {
+        Args: {
+          requested_evidence: Json
+          requested_values: Json
+          target_organization_id: string
+          target_reference: string
+        }
+        Returns: string
       }
       create_organization_invitation: {
         Args: {
@@ -424,6 +859,33 @@ export type Database = {
           organization_id: string
           organization_slug: string
         }[]
+      }
+      create_playbook: {
+        Args: {
+          request_id: string
+          requested_description: string
+          requested_name: string
+          requested_schema: Json
+          target_organization_id: string
+          target_service_id: string
+        }
+        Returns: {
+          playbook_id: string
+          version_id: string
+        }[]
+      }
+      create_playbook_version: {
+        Args: { target_organization_id: string; target_playbook_id: string }
+        Returns: string
+      }
+      create_service_definition: {
+        Args: {
+          request_id: string
+          requested_description: string
+          requested_name: string
+          target_organization_id: string
+        }
+        Returns: string
       }
       create_service_request: {
         Args: {
@@ -496,6 +958,10 @@ export type Database = {
           updated_at: string
         }[]
       }
+      publish_playbook_version: {
+        Args: { target_organization_id: string; target_version_id: string }
+        Returns: undefined
+      }
       record_service_request_export: {
         Args: { target_organization_id: string; target_reference: string }
         Returns: undefined
@@ -535,6 +1001,15 @@ export type Database = {
         }
         Returns: undefined
       }
+      update_playbook_draft: {
+        Args: {
+          expected_version: number
+          requested_schema: Json
+          target_organization_id: string
+          target_version_id: string
+        }
+        Returns: number
+      }
       update_service_request: {
         Args: {
           expected_version: number
@@ -556,8 +1031,13 @@ export type Database = {
         }
         Returns: number
       }
+      validate_dossier_qualification: {
+        Args: { target_organization_id: string; target_reference: string }
+        Returns: undefined
+      }
     }
     Enums: {
+      coverage_area_type: "country" | "city" | "postal_code"
       organization_invitation_status:
         | "pending"
         | "accepted"
@@ -565,7 +1045,20 @@ export type Database = {
         | "revoked"
       organization_membership_status: "active" | "suspended" | "removed"
       organization_role: "owner" | "admin" | "member"
+      playbook_audit_event_type:
+        | "service_created"
+        | "coverage_added"
+        | "playbook_created"
+        | "version_created"
+        | "version_published"
+        | "dossier_associated"
+        | "qualification_calculated"
+        | "qualification_validated"
+      playbook_status: "draft" | "active" | "archived"
+      playbook_version_status: "draft" | "published"
       preferred_contact_channel: "email" | "phone" | "none"
+      qualification_recommendation: "incomplete" | "needs_review" | "qualified"
+      service_definition_status: "active" | "inactive" | "archived"
       service_request_event_type:
         | "created"
         | "updated"
@@ -720,6 +1213,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      coverage_area_type: ["country", "city", "postal_code"],
       organization_invitation_status: [
         "pending",
         "accepted",
@@ -728,7 +1222,21 @@ export const Constants = {
       ],
       organization_membership_status: ["active", "suspended", "removed"],
       organization_role: ["owner", "admin", "member"],
+      playbook_audit_event_type: [
+        "service_created",
+        "coverage_added",
+        "playbook_created",
+        "version_created",
+        "version_published",
+        "dossier_associated",
+        "qualification_calculated",
+        "qualification_validated",
+      ],
+      playbook_status: ["draft", "active", "archived"],
+      playbook_version_status: ["draft", "published"],
       preferred_contact_channel: ["email", "phone", "none"],
+      qualification_recommendation: ["incomplete", "needs_review", "qualified"],
+      service_definition_status: ["active", "inactive", "archived"],
       service_request_event_type: [
         "created",
         "updated",
