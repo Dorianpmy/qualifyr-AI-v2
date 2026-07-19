@@ -61,6 +61,7 @@ function Navigation({ slug, pathname, mobile = false }: { slug: string; pathname
         const link = (
           <Button
             asChild
+            liquid={false}
             variant="ghost"
             className={cn(
               "h-11 w-full justify-start gap-3 rounded-[var(--radius-md)] px-3 text-[13px] font-semibold text-[var(--sidebar-muted)] hover:bg-[var(--sidebar-accent-hover)] hover:text-[var(--on-dark)]",
@@ -78,7 +79,7 @@ function Navigation({ slug, pathname, mobile = false }: { slug: string; pathname
         );
         return mobile ? <DialogClose key={item.key} asChild>{link}</DialogClose> : <div key={item.key}>{link}</div>;
       })}
-      <Button asChild variant="ghost" className="h-11 justify-start gap-3 rounded-[var(--radius-md)] px-3 text-[13px] font-semibold text-[var(--sidebar-muted)] hover:bg-[var(--sidebar-accent-hover)] hover:text-[var(--on-dark)]">
+      <Button asChild liquid={false} variant="ghost" className="h-11 justify-start gap-3 rounded-[var(--radius-md)] px-3 text-[13px] font-semibold text-[var(--sidebar-muted)] hover:bg-[var(--sidebar-accent-hover)] hover:text-[var(--on-dark)]">
         <Link href={`/app/${slug}#organisation`}>
           <span className="grid size-7 place-items-center rounded-[var(--radius-xs)]"><Settings2 className="size-4" aria-hidden="true" /></span>
           Paramètres
@@ -100,7 +101,7 @@ function AccountPanel({ current }: { current: OrganizationSummary }) {
           <p className="text-[11px] text-[var(--sidebar-muted)]">{organizationMessages.roles[current.role]}</p>
         </div>
         <form action={signOutAction}>
-          <Button type="submit" variant="ghost" size="icon-sm" className="text-[var(--sidebar-muted)] hover:text-[var(--on-dark)]" aria-label="Se déconnecter">
+          <Button type="submit" liquid={false} variant="ghost" size="icon-sm" className="text-[var(--sidebar-muted)] hover:text-[var(--on-dark)]" aria-label="Se déconnecter">
             <LogOut aria-hidden="true" />
           </Button>
         </form>
@@ -127,8 +128,8 @@ export function OrganizationShell({ children, organizations, current, isPlatform
           <Navigation slug={current.slug} pathname={pathname} />
         </div>
         <div className="relative grid gap-2.5 border-t border-[var(--sidebar-border)] pt-4">
-          {isPlatformAdmin ? <Button asChild variant="glass" className="justify-start text-[var(--on-dark)]"><Link href="/admin"><ShieldCheck aria-hidden="true" />Administration SaaS</Link></Button> : null}
-          <Button asChild variant="ghost" className="justify-start text-[var(--sidebar-muted)] hover:text-[var(--on-dark)]">
+          {isPlatformAdmin ? <Button asChild liquid={false} variant="glass" className="justify-start text-[var(--on-dark)]"><Link href="/admin"><ShieldCheck aria-hidden="true" />Administration SaaS</Link></Button> : null}
+          <Button asChild liquid={false} variant="ghost" className="justify-start text-[var(--sidebar-muted)] hover:text-[var(--on-dark)]">
             <Link href="/app/onboarding"><Plus aria-hidden="true" />Créer une organisation</Link>
           </Button>
           <AccountPanel current={current} />

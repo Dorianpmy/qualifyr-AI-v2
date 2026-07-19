@@ -22,7 +22,7 @@ export async function signInAction(_state: AuthActionState, formData: FormData):
 }
 
 export async function signUpAction(_state: AuthActionState, formData: FormData): Promise<AuthActionState> {
-  const parsed = signUpSchema.safeParse(formDataObject(formData, ["firstName", "lastName", "email", "password", "passwordConfirmation", "next"]));
+  const parsed = signUpSchema.safeParse(formDataObject(formData, ["firstName", "lastName", "email", "password", "passwordConfirmation", "next", "plan"]));
   if (!parsed.success) return { status: "error", message: authMessages.common.genericError };
 
   const env = getPublicEnv();
@@ -38,6 +38,7 @@ export async function signUpAction(_state: AuthActionState, formData: FormData):
         locale: i18nConfig.defaultLocale,
         timezone: i18nConfig.defaultTimezone,
         primary_language: i18nConfig.defaultPrimaryLanguage,
+        selected_plan: parsed.data.plan,
       },
     },
   });

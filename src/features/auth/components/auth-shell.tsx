@@ -14,7 +14,10 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
             <BrandMark />
             <span><strong className="block tracking-[-0.025em]">{authMessages.brand.name}</strong><span className="text-xs text-muted-foreground">{authMessages.brand.promise}</span></span>
           </Link>
-          <div className="ml-auto"><ThemeToggle /></div>
+          <div className="ml-auto flex items-center gap-2">
+            <Link href="/#forfaits" className="focus-ring rounded-[var(--radius-sm)] px-2 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground">Forfaits</Link>
+            <ThemeToggle />
+          </div>
         </header>
         {children}
       </div>

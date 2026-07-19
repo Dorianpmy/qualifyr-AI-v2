@@ -59,6 +59,8 @@
   --glass-border: rgb(255 255 255 / 72%);
   --glass-highlight: rgb(255 255 255 / 68%);
   --glass-tint: rgb(32 207 99 / 5%);
+  --liquid-green: rgb(32 207 99 / 20%);
+  --liquid-green-strong: rgb(53 219 119 / 32%);
   --blur-soft: 10px;
   --blur-medium: 16px;
   --blur-strong: 24px;
@@ -103,6 +105,7 @@
   --duration-fast: 140ms;
   --duration-base: 200ms;
   --duration-slow: 420ms;
+  --duration-liquid: 900ms;
   --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -134,6 +137,8 @@
     --glass-strong: rgb(29 33 29 / 88%);
     --glass-border: rgb(255 255 255 / 9%);
     --glass-highlight: rgb(255 255 255 / 7%);
+    --liquid-green: rgb(32 207 99 / 18%);
+    --liquid-green-strong: rgb(53 219 119 / 26%);
     --shadow-xs: 0 4px 14px rgb(0 0 0 / 14%);
     --shadow-soft: 0 10px 28px rgb(0 0 0 / 18%);
     --shadow-card: 0 16px 44px rgb(0 0 0 / 22%);
@@ -168,6 +173,8 @@
   --glass-strong: rgb(29 33 29 / 88%);
   --glass-border: rgb(255 255 255 / 9%);
   --glass-highlight: rgb(255 255 255 / 7%);
+  --liquid-green: rgb(32 207 99 / 18%);
+  --liquid-green-strong: rgb(53 219 119 / 26%);
   --shadow-xs: 0 4px 14px rgb(0 0 0 / 14%);
   --shadow-soft: 0 10px 28px rgb(0 0 0 / 18%);
   --shadow-card: 0 16px 44px rgb(0 0 0 / 22%);

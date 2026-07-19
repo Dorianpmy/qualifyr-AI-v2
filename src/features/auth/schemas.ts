@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { planIds } from "@/features/billing/plans";
+
 const normalizedName = z.string().trim().min(1).max(80).transform((value) => value.replace(/\s+/g, " "));
 const email = z.email().max(254).transform((value) => value.trim().toLowerCase());
 const password = z.string().min(12).max(128)
@@ -15,6 +17,7 @@ export const signUpSchema = z.strictObject({
   password,
   passwordConfirmation: z.string().max(128),
   next: z.string().max(512).optional(),
+  plan: z.enum(planIds).optional(),
 }).refine((value) => value.password === value.passwordConfirmation, { path: ["passwordConfirmation"], message: "password_mismatch" });
 export const forgotPasswordSchema = z.strictObject({ email });
 export const resetPasswordSchema = z.strictObject({ password, passwordConfirmation: z.string().max(128) })
