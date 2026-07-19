@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Qualifyr AI V2
 
-## Getting Started
+Fondation neuve du produit Qualifyr AI. Le produit est pensé autour du **Dossier** : l’IA comprend, le moteur qualifie, l’humain valide.
 
-First, run the development server:
+Cette étape ne contient volontairement aucun AI Intake, Playbook, Dossier, Workflow, CRM ou Agent.
+
+## Stack
+
+- Next.js 16 App Router et React 19, Server Components par défaut
+- TypeScript strict, avec contrôles supplémentaires sur les index et propriétés optionnelles
+- Tailwind CSS 4 et shadcn/ui (Radix) pour un design system possédé par le projet
+- React Hook Form et Zod, installés pour les futurs formulaires typés
+- Supabase SSR, Auth, PostgreSQL et RLS
+- Vitest pour les tests unitaires
+- npm et lockfile versionné pour une installation reproductible
+
+TanStack Query n’est pas installé : le socle n’a pas de besoin de cache client. Il sera ajouté seulement si une future expérience interactive le justifie.
+
+## Démarrage
+
+Prérequis : Node.js 20.9 ou plus récent, npm et Docker pour Supabase local.
 
 ```bash
+cp .env.example .env.local
+npm install
+npm run db:start
+# reporter les clés locales affichées par Supabase dans .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La page est disponible sur `http://localhost:3000` et Supabase Studio sur `http://127.0.0.1:55323`. Les ports Supabase `5532x` évitent de perturber un éventuel projet V1 local déjà actif.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script | Usage |
+| --- | --- |
+| `npm run dev` | serveur Next.js local avec Turbopack |
+| `npm run build` | build de production Webpack (reproductible dans les environnements contraints) |
+| `npm run start` | exécution du build de production |
+| `npm run lint` | ESLint, aucun warning accepté |
+| `npm run typecheck` | validation TypeScript sans émission |
+| `npm test` | tests Vitest une fois |
+| `npm run test:watch` | tests Vitest en continu |
+| `npm run test:coverage` | couverture de tests |
+| `npm run check` | lint, types et tests |
+| `npm run db:start` | démarre Supabase local |
+| `npm run db:stop` | arrête Supabase local sans sauvegarde |
+| `npm run db:reset` | rejoue les migrations locales |
+| `npm run db:test` | exécute les tests SQL Supabase |
+| `npm run db:types` | régénère les types TypeScript depuis le schéma local |
 
-## Learn More
+## Variables d’environnement
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Portée | Description |
+| --- | --- | --- |
+| `NEXT_PUBLIC_APP_URL` | publique | URL canonique de l’application |
+| `NEXT_PUBLIC_SUPABASE_URL` | publique | URL du projet Supabase |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | publique | clé publiable, protégée par RLS |
+| `SUPABASE_SECRET_KEY` | serveur | réservée aux rares opérations privilégiées futures ; ne jamais exposer |
+| `AI_PROVIDER` | serveur | forcé à `disabled` dans cette fondation |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+La validation est paresseuse : un build purement statique ne crée aucun client externe au chargement des modules. Les secrets ne portent jamais le préfixe `NEXT_PUBLIC_`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture
 
-## Deploy on Vercel
+```text
+.
+├── public/                         # ressources statiques
+├── src/
+│   ├── app/                        # routes, layouts, metadata et styles globaux
+│   ├── components/
+│   │   └── ui/                     # primitives shadcn accessibles et personnalisables
+│   ├── config/                     # configuration et validation d’environnement
+│   ├── db/                         # futurs repositories et requêtes typées
+│   ├── features/                   # futures capacités métier, isolées par domaine
+│   ├── hooks/                      # hooks React réellement transverses
+│   ├── lib/                        # adaptateurs techniques réutilisables (Supabase, utils)
+│   ├── server/                     # cas d’usage exclusivement serveur et auth context
+│   ├── services/
+│   │   └── ai/                     # port IA unique, fournisseur désactivé par défaut
+│   ├── styles/                     # styles spécialisés futurs
+│   ├── types/                      # contrats transverses et types DB générés
+│   └── proxy.ts                    # rafraîchissement cookie Supabase, jamais seule barrière auth
+├── supabase/
+│   ├── config.toml                 # stack Supabase locale
+│   └── migrations/                 # schéma versionné et politiques RLS
+├── .env.example                    # contrat de configuration sans secret
+├── components.json                # configuration shadcn/ui
+├── eslint.config.mjs              # règles Next.js et TypeScript
+├── next.config.ts                 # configuration Next.js
+├── package.json                   # dépendances et scripts
+└── tsconfig.json                  # TypeScript strict
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Règles de séparation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/` compose les routes ; la logique n’y vit pas.
+- `features/` possédera la logique et l’interface propres à chaque capacité.
+- `server/` orchestre l’autorisation et les cas d’usage côté serveur.
+- `db/` encapsule les lectures/écritures PostgreSQL.
+- `services/` encapsule les systèmes externes. Tout futur appel IA passe par `services/ai`.
+- `components/ui/` reste métier-agnostique.
+
+## Multi-tenant et sécurité
+
+La première migration crée seulement `organizations` et `organization_memberships`. Les deux tables activent et forcent RLS. Les utilisateurs authentifiés peuvent uniquement lire l’organisation et les membres des organisations auxquelles ils appartiennent. Aucune écriture publique n’est ouverte tant que les cas d’usage correspondants n’existent pas.
+
+Toute future table privée devra contenir un `organization_id` non nul, indexé, référencé vers `organizations`, avec RLS et des politiques testées. Le Proxy rafraîchit la session avec `getClaims()`, mais chaque Server Component, Server Action ou Route Handler sensible devra réautoriser l’accès ; RLS reste la dernière barrière.
+
+## Design system
+
+Les composants consomment uniquement des tokens sémantiques (`background`, `primary`, `card`, `border`, etc.). Les effets glass, blur, ombres, rayons, transitions et réduction de mouvement sont centralisés dans `src/app/globals.css`.
+
+Le code de Qualifyr V1 n’était pas présent dans ce workspace. La direction proposée est donc un socle premium provisoire, pas une affirmation de parité visuelle. Pour retrouver **exactement** V1, il faudra fournir une URL, des captures ou ses tokens ; l’audit modifiera les tokens sans réécrire l’architecture.
+
+## Décisions structurantes
+
+- Pas d’ORM à ce stade : Supabase génère déjà un client et des types ; aucune logique métier ne justifie une couche supplémentaire.
+- Pas de client Supabase global : chaque client serveur est créé à la demande avec le cookie store de la requête.
+- Pas d’appel IA réel : `DisabledAiProvider` échoue explicitement et empêche les appels accidentels.
+- Pas de `service_role` côté navigateur : seules les clés publiables peuvent être exposées.
+- Pas de dashboard fictif : la route racine présente uniquement l’état du socle.
+
+## Prochaines améliorations proposées
+
+1. Faire un audit visuel V1 (tokens, états, navigation, motion) avant toute UI produit.
+2. Étendre les tests SQL pgTAP existants avec des scénarios d’isolation pour chaque nouvelle politique RLS.
+3. Configurer CI sur `npm run check`, le build et les tests Supabase.
+4. Générer les types DB dans CI et refuser les différences non commitées.
+5. Ajouter observabilité, journal d’audit et idempotence au moment du premier vrai cas d’usage.
+6. Définir le premier contrat de Dossier avant de choisir un fournisseur IA ou un modèle.
