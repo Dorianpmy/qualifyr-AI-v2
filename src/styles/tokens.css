@@ -1,0 +1,174 @@
+:root {
+  color-scheme: light;
+
+  /* Color — Qualifyr brand reconstructed from V1 and the Phase 2 brief */
+  --background: #f8f5ee;
+  --foreground: #111111;
+  --surface: #ffffff;
+  --surface-elevated: #fffdf9;
+  --surface-hover: #f2eee8;
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: var(--surface-elevated);
+  --popover-foreground: var(--foreground);
+  --primary: #8b5cf6;
+  --primary-hover: #9f7aea;
+  --primary-strong: #6d28d9;
+  --primary-foreground: #ffffff;
+  --primary-soft: rgb(139 92 246 / 10%);
+  --primary-border: rgb(139 92 246 / 24%);
+  --secondary: #f2eee8;
+  --secondary-foreground: #292723;
+  --muted: #f2eee8;
+  --muted-foreground: #6e6e6e;
+  --text-secondary: #6e6e6e;
+  --text-tertiary: #928b81;
+  --accent: var(--primary-soft);
+  --accent-foreground: var(--primary-strong);
+  --success: #27754d;
+  --success-soft: rgb(39 117 77 / 10%);
+  --warning: #996515;
+  --warning-soft: rgb(230 169 72 / 13%);
+  --danger: #c93f54;
+  --danger-soft: rgb(201 63 84 / 10%);
+  --destructive: var(--danger);
+  --border: #ece8e1;
+  --border-strong: #ddd7ce;
+  --input: var(--border);
+  --ring: var(--primary);
+  --selection: rgb(139 92 246 / 24%);
+  --on-dark: #ffffff;
+  --overlay: rgb(7 16 11 / 48%);
+
+  /* Sidebar and header */
+  --sidebar: #0a0c0a;
+  --sidebar-elevated: #111411;
+  --sidebar-foreground: #ffffff;
+  --sidebar-muted: rgb(255 255 255 / 54%);
+  --sidebar-accent: rgb(255 255 255 / 7.5%);
+  --sidebar-accent-hover: rgb(255 255 255 / 11%);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: #bdf0cd;
+  --sidebar-border: rgb(255 255 255 / 9%);
+  --sidebar-ring: var(--primary);
+  --header: rgb(251 248 241 / 94%);
+
+  /* Glass and blur */
+  --glass: rgb(255 255 255 / 72%);
+  --glass-strong: rgb(255 255 255 / 86%);
+  --glass-border: rgb(255 255 255 / 58%);
+  --glass-highlight: rgb(255 255 255 / 42%);
+  --blur-soft: 10px;
+  --blur-medium: 16px;
+  --blur-strong: 24px;
+
+  /* Elevation */
+  --shadow-xs: 0 4px 14px rgb(17 17 17 / 4%);
+  --shadow-soft: 0 10px 28px rgb(17 17 17 / 5%);
+  --shadow-card: 0 16px 44px rgb(17 17 17 / 5.5%);
+  --shadow-hover: 0 22px 58px rgb(17 17 17 / 8.5%);
+  --shadow-primary: 0 14px 34px rgb(139 92 246 / 22%);
+  --shadow-sidebar: 0 18px 44px rgb(0 0 0 / 20%);
+  --shadow-focus: 0 0 0 4px rgb(139 92 246 / 20%);
+
+  /* Radius */
+  --radius: 1rem;
+  --radius-xs: 0.625rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.125rem;
+  --radius-2xl: 1.375rem;
+  --radius-3xl: 1.75rem;
+  --radius-full: 999px;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --sidebar-width: 15.5rem;
+  --sidebar-width-collapsed: 4.625rem;
+  --header-height: 4rem;
+  --content-max: 85rem;
+
+  /* Motion */
+  --duration-fast: 140ms;
+  --duration-base: 200ms;
+  --duration-slow: 420ms;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --background: #101310;
+    --foreground: #f7f4ed;
+    --surface: #171b17;
+    --surface-elevated: #1d211d;
+    --surface-hover: #232823;
+    --card: var(--surface);
+    --card-foreground: var(--foreground);
+    --popover: var(--surface-elevated);
+    --popover-foreground: var(--foreground);
+    --primary-hover: #183725;
+    --primary-foreground: #07100b;
+    --secondary: #232823;
+    --secondary-foreground: #f7f4ed;
+    --muted: #202420;
+    --muted-foreground: #b0aaa1;
+    --text-secondary: #b0aaa1;
+    --text-tertiary: #8e8a82;
+    --border: #2d322d;
+    --border-strong: #3a403a;
+    --header: rgb(16 19 16 / 92%);
+    --glass: rgb(29 33 29 / 74%);
+    --glass-strong: rgb(29 33 29 / 88%);
+    --glass-border: rgb(255 255 255 / 9%);
+    --glass-highlight: rgb(255 255 255 / 7%);
+    --shadow-xs: 0 4px 14px rgb(0 0 0 / 14%);
+    --shadow-soft: 0 10px 28px rgb(0 0 0 / 18%);
+    --shadow-card: 0 16px 44px rgb(0 0 0 / 22%);
+    --shadow-hover: 0 22px 58px rgb(0 0 0 / 32%);
+  }
+}
+
+:root[data-theme="light"] { color-scheme: light; }
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #101310;
+  --foreground: #f7f4ed;
+  --surface: #171b17;
+  --surface-elevated: #1d211d;
+  --surface-hover: #232823;
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: var(--surface-elevated);
+  --popover-foreground: var(--foreground);
+  --primary-hover: #183725;
+  --secondary: #232823;
+  --secondary-foreground: #f7f4ed;
+  --muted: #202420;
+  --muted-foreground: #b0aaa1;
+  --text-secondary: #b0aaa1;
+  --text-tertiary: #8e8a82;
+  --border: #2d322d;
+  --border-strong: #3a403a;
+  --header: rgb(16 19 16 / 92%);
+  --glass: rgb(29 33 29 / 74%);
+  --glass-strong: rgb(29 33 29 / 88%);
+  --glass-border: rgb(255 255 255 / 9%);
+  --glass-highlight: rgb(255 255 255 / 7%);
+  --shadow-xs: 0 4px 14px rgb(0 0 0 / 14%);
+  --shadow-soft: 0 10px 28px rgb(0 0 0 / 18%);
+  --shadow-card: 0 16px 44px rgb(0 0 0 / 22%);
+  --shadow-hover: 0 22px 58px rgb(0 0 0 / 32%);
+}

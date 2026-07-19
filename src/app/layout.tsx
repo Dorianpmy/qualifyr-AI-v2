@@ -20,8 +20,17 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${GeistSans.variable} ${GeistMono.variable} dark h-full antialiased`}
+      data-theme="light"
+      className={`${GeistSans.variable} ${GeistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("qualifyr-theme");if(t==="dark")document.documentElement.dataset.theme="dark";else if(t==="system")document.documentElement.removeAttribute("data-theme");}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
