@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  MailCheck,
   Plus,
   Settings2,
   ShieldCheck,
@@ -45,6 +46,7 @@ const navigation = [
   { key: "dossiers", label: "Dossiers", icon: FolderKanban, suffix: "/dossiers", exact: false },
   { key: "services", label: "Services", icon: BriefcaseBusiness, suffix: "/services", exact: false },
   { key: "playbooks", label: "Playbooks", icon: BookOpenCheck, suffix: "/playbooks", exact: false },
+  { key: "email", label: "Canal email", icon: MailCheck, suffix: "/canaux/email", exact: false },
   { key: "team", label: "Équipe", icon: Users, suffix: "/membres", exact: false },
 ] as const;
 

@@ -13,6 +13,9 @@ const serverEnvSchema = publicEnvSchema.extend({
   AI_TIMEOUT_MS:z.coerce.number().int().min(1000).max(120000).default(20000),
   AI_MAX_OUTPUT_TOKENS:z.coerce.number().int().min(128).max(4096).default(1200),
   AI_TEMPERATURE:z.coerce.number().min(0).max(1).default(0),
+  RESEND_API_KEY: z.string().startsWith("re_").optional(),
+  RESEND_WEBHOOK_SECRET: z.string().min(20).optional(),
+  INBOUND_EMAIL_DOMAIN: z.string().regex(/^[a-z0-9.-]+$/).optional(),
 });
 
 export type PublicEnv = z.infer<typeof publicEnvSchema>;
@@ -36,5 +39,8 @@ export function getServerEnv(): ServerEnv {
     AI_TIMEOUT_MS:process.env.AI_TIMEOUT_MS,
     AI_MAX_OUTPUT_TOKENS:process.env.AI_MAX_OUTPUT_TOKENS,
     AI_TEMPERATURE:process.env.AI_TEMPERATURE,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    RESEND_WEBHOOK_SECRET: process.env.RESEND_WEBHOOK_SECRET,
+    INBOUND_EMAIL_DOMAIN: process.env.INBOUND_EMAIL_DOMAIN,
   });
 }

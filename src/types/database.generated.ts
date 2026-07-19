@@ -535,6 +535,88 @@ export type Database = {
         }
         Relationships: []
       }
+      inbound_email_events: {
+        Row: {
+          attachment_count: number
+          channel_id: string
+          created_at: string
+          failure_code: string | null
+          id: string
+          message_id: string | null
+          metadata_expires_at: string
+          organization_id: string
+          processed_at: string | null
+          provider: string
+          provider_email_id: string
+          received_at: string
+          recipient_address: string
+          sender_email: string
+          service_request_id: string | null
+          status: Database["public"]["Enums"]["inbound_email_status"]
+          subject: string
+        }
+        Insert: {
+          attachment_count?: number
+          channel_id: string
+          created_at?: string
+          failure_code?: string | null
+          id?: string
+          message_id?: string | null
+          metadata_expires_at: string
+          organization_id: string
+          processed_at?: string | null
+          provider: string
+          provider_email_id: string
+          received_at: string
+          recipient_address: string
+          sender_email: string
+          service_request_id?: string | null
+          status?: Database["public"]["Enums"]["inbound_email_status"]
+          subject: string
+        }
+        Update: {
+          attachment_count?: number
+          channel_id?: string
+          created_at?: string
+          failure_code?: string | null
+          id?: string
+          message_id?: string | null
+          metadata_expires_at?: string
+          organization_id?: string
+          processed_at?: string | null
+          provider?: string
+          provider_email_id?: string
+          received_at?: string
+          recipient_address?: string
+          sender_email?: string
+          service_request_id?: string | null
+          status?: Database["public"]["Enums"]["inbound_email_status"]
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inbound_email_events_organization_id_channel_id_fkey"
+            columns: ["organization_id", "channel_id"]
+            isOneToOne: false
+            referencedRelation: "organization_email_channels"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "inbound_email_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inbound_email_events_organization_id_service_request_id_fkey"
+            columns: ["organization_id", "service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       intake_messages: {
         Row: {
           content: string
@@ -657,6 +739,53 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "service_requests"
             referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      organization_email_channels: {
+        Row: {
+          ai_processing_enabled: boolean
+          configured_by: string
+          created_at: string
+          data_processing_acknowledged_at: string | null
+          id: string
+          organization_id: string
+          retention_days: number
+          route_key: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          ai_processing_enabled?: boolean
+          configured_by: string
+          created_at?: string
+          data_processing_acknowledged_at?: string | null
+          id?: string
+          organization_id: string
+          retention_days?: number
+          route_key?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          ai_processing_enabled?: boolean
+          configured_by?: string
+          created_at?: string
+          data_processing_acknowledged_at?: string | null
+          id?: string
+          organization_id?: string
+          retention_days?: number
+          route_key?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_email_channels_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1006,6 +1135,24 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           version?: number
+        }
+        Relationships: []
+      }
+      platform_admins: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -1559,14 +1706,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_platform_admin_overview: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      is_platform_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
       accept_organization_invitation: {
         Args: { raw_token: string }
         Returns: {
@@ -1622,6 +1761,28 @@ export type Database = {
           target_reference: string
         }
         Returns: string
+      }
+      complete_inbound_email_processing: {
+        Args: {
+          requested_failure_code?: string
+          requested_status: Database["public"]["Enums"]["inbound_email_status"]
+          target_event_id: string
+        }
+        Returns: undefined
+      }
+      configure_organization_email_channel: {
+        Args: {
+          acknowledge_processing: boolean
+          requested_enabled: boolean
+          requested_retention_days: number
+          target_organization_id: string
+        }
+        Returns: {
+          ai_processing_enabled: boolean
+          retention_days: number
+          route_key: string
+          status: string
+        }[]
       }
       create_organization_invitation: {
         Args: {
@@ -1710,6 +1871,33 @@ export type Database = {
         }
         Returns: undefined
       }
+      get_platform_admin_overview: { Args: never; Returns: Json }
+      ingest_inbound_email: {
+        Args: {
+          requested_attachment_count: number
+          requested_body: string
+          requested_message_id: string
+          requested_provider_email_id: string
+          requested_received_at: string
+          requested_recipient: string
+          requested_route_key: string
+          requested_sender_email: string
+          requested_subject: string
+        }
+        Returns: {
+          ai_enabled: boolean
+          created: boolean
+          event_id: string
+          intake_session_id: string
+          locale: string
+          organization_id: string
+          playbook_version_id: string
+          reference_code: string
+          service_request_id: string
+          source_message_id: string
+        }[]
+      }
+      is_platform_admin: { Args: never; Returns: boolean }
       list_organization_members: {
         Args: { target_organization_id: string }
         Returns: {
@@ -1957,6 +2145,12 @@ export type Database = {
         | "configured"
         | "disabled"
         | "error"
+      inbound_email_status:
+        | "received"
+        | "processing"
+        | "needs_review"
+        | "failed"
+        | "ignored"
       intake_message_role: "user" | "assistant" | "system_event"
       intake_session_status: "active" | "paused" | "completed" | "cancelled"
       organization_invitation_status:
@@ -2185,6 +2379,13 @@ export const Constants = {
         "configured",
         "disabled",
         "error",
+      ],
+      inbound_email_status: [
+        "received",
+        "processing",
+        "needs_review",
+        "failed",
+        "ignored",
       ],
       intake_message_role: ["user", "assistant", "system_event"],
       intake_session_status: ["active", "paused", "completed", "cancelled"],
