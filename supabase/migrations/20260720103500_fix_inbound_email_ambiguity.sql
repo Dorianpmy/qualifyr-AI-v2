@@ -1,0 +1,26 @@
+create or replace function public.ingest_inbound_email(requested_route_key text,requested_provider_email_id text,requested_message_id text,requested_sender_email text,requested_recipient text,requested_subject text,requested_body text,requested_received_at timestamptz,requested_attachment_count integer)
+returns table(event_id uuid,organization_id uuid,reference_code text,service_request_id uuid,intake_session_id uuid,source_message_id uuid,playbook_version_id uuid,locale text,ai_enabled boolean,created boolean)
+language plpgsql security definer set search_path='' as $$
+declare channel public.organization_email_channels%rowtype; org public.organizations%rowtype; existing public.inbound_email_events%rowtype; actor uuid; new_event uuid; new_request uuid; new_reference text; selected_service uuid; selected_version uuid; selected_label text:='À déterminer'; new_session uuid; new_message uuid; attempt integer:=0;
+begin
+  select * into channel from public.organization_email_channels c where c.route_key=requested_route_key and c.status='active';
+  if not found or channel.data_processing_acknowledged_at is null then raise exception 'unknown_channel'; end if;
+  if char_length(trim(requested_body)) not between 10 and 10000 or lower(trim(requested_sender_email)) !~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$' then raise exception 'invalid_email'; end if;
+  select * into existing from public.inbound_email_events e where e.provider='resend' and e.provider_email_id=requested_provider_email_id;
+  if found then return query select existing.id,existing.organization_id,r.reference_code,existing.service_request_id,s.id,m.id,s.playbook_version_id,coalesce(o.locale,'fr-FR'),channel.ai_processing_enabled,false from public.service_requests r left join public.intake_sessions s on s.service_request_id=r.id and s.status='active' left join public.intake_messages m on m.intake_session_id=s.id and m.role='user' join public.organizations o on o.id=r.organization_id where r.id=existing.service_request_id limit 1; return; end if;
+  select * into org from public.organizations o where o.id=channel.organization_id and o.archived_at is null;
+  actor:=channel.configured_by;
+  select p.service_definition_id,p.active_version_id,sd.name into selected_service,selected_version,selected_label from public.playbooks p join public.service_definitions sd on sd.organization_id=p.organization_id and sd.id=p.service_definition_id where p.organization_id=channel.organization_id and p.status='active' and p.active_version_id is not null order by p.updated_at desc limit 1;
+  selected_label:=coalesce(selected_label,'À déterminer');
+  loop attempt:=attempt+1; new_reference:='D-'||upper(substr(pg_catalog.encode(extensions.gen_random_bytes(8),'hex'),1,10)); exit when not exists(select 1 from public.service_requests sr where sr.organization_id=channel.organization_id and sr.reference_code=new_reference); if attempt>=5 then raise exception 'reference_generation_failed'; end if; end loop;
+  insert into public.service_requests(organization_id,reference_code,title,original_request,source,status,service_label,requester_email,preferred_contact_channel,requester_locale,country_code,postal_code,city,created_by,updated_by,creation_request_id,service_definition_id,playbook_version_id)
+  values(channel.organization_id,new_reference,left(coalesce(nullif(trim(requested_subject),''),'Demande reçue par email'),160),trim(requested_body),'email','incomplete',selected_label,lower(trim(requested_sender_email)),'email',coalesce(org.locale,'fr-FR'),coalesce(org.country_code,'FR'),'À confirmer','À confirmer',actor,actor,extensions.gen_random_uuid(),selected_service,selected_version) returning id into new_request;
+  insert into public.service_request_events(organization_id,service_request_id,event_type,actor_user_id,metadata) values(channel.organization_id,new_request,'created',actor,jsonb_build_object('source','email','automatic',true));
+  insert into public.inbound_email_events(organization_id,channel_id,provider,provider_email_id,message_id,sender_email,recipient_address,subject,attachment_count,status,service_request_id,received_at,metadata_expires_at)
+  values(channel.organization_id,channel.id,'resend',requested_provider_email_id,left(requested_message_id,500),lower(trim(requested_sender_email)),lower(trim(requested_recipient)),left(coalesce(nullif(trim(requested_subject),''),'Sans objet'),300),greatest(0,least(requested_attachment_count,100)),'processing',new_request,requested_received_at,now()+make_interval(days=>channel.retention_days)) returning id into new_event;
+  if selected_version is not null then
+    insert into public.intake_sessions(organization_id,service_request_id,playbook_version_id,locale,created_by) values(channel.organization_id,new_request,selected_version,coalesce(org.locale,'fr-FR'),actor) returning id into new_session;
+    insert into public.intake_messages(organization_id,intake_session_id,role,content,sequence_number,request_id) values(channel.organization_id,new_session,'user',left(trim(requested_body),5000),1,extensions.gen_random_uuid()) returning id into new_message;
+  end if;
+  return query select new_event,channel.organization_id,new_reference,new_request,new_session,new_message,selected_version,coalesce(org.locale,'fr-FR'),channel.ai_processing_enabled,true;
+end; $$;
