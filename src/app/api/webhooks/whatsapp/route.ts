@@ -3,10 +3,10 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 
 import {
-  extractWhatsappTextMessages,
+  extractWhatsappInboundMessages,
   whatsappWebhookSchema,
 } from "@/features/whatsapp/schemas";
-import { processWhatsappTextMessage } from "@/server/whatsapp/service";
+import { processWhatsappInboundMessage } from "@/server/whatsapp/service";
 import { getWhatsappPilotConfig } from "@/services/whatsapp/cloud-api";
 
 export const runtime = "nodejs";
@@ -43,9 +43,9 @@ export async function POST(request: Request) {
   try { json = JSON.parse(payload); } catch { return new NextResponse("Invalid payload", { status: 400 }); }
   const parsed = whatsappWebhookSchema.safeParse(json);
   if (!parsed.success) return NextResponse.json({ received: true });
-  const messages = extractWhatsappTextMessages(parsed.data, config.phoneNumberId);
+  const messages = extractWhatsappInboundMessages(parsed.data, config.phoneNumberId);
   try {
-    for (const message of messages) await processWhatsappTextMessage(message, config);
+    for (const message of messages) await processWhatsappInboundMessage(message, config);
     return NextResponse.json({ received: true });
   } catch {
     return new NextResponse("Processing failed", { status: 500 });
