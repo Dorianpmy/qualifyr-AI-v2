@@ -1701,6 +1701,154 @@ export type Database = {
           },
         ]
       }
+      whatsapp_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          intake_session_id: string
+          organization_id: string
+          profile_name: string | null
+          sender_phone: string
+          service_request_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          intake_session_id: string
+          organization_id: string
+          profile_name?: string | null
+          sender_phone: string
+          service_request_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          intake_session_id?: string
+          organization_id?: string
+          profile_name?: string | null
+          sender_phone?: string
+          service_request_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_conversations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_conversations_organization_id_intake_session_id_fkey"
+            columns: ["organization_id", "intake_session_id"]
+            isOneToOne: false
+            referencedRelation: "intake_sessions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "whatsapp_conversations_organization_id_service_request_id_fkey"
+            columns: ["organization_id", "service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      whatsapp_message_events: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          failure_code: string | null
+          id: string
+          intake_session_id: string
+          organization_id: string
+          outbound_provider_message_id: string | null
+          processed_at: string | null
+          provider_message_id: string
+          received_at: string
+          response_message: string | null
+          sender_phone: string
+          service_request_id: string
+          source_message_id: string
+          status: Database["public"]["Enums"]["whatsapp_message_status"]
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          failure_code?: string | null
+          id?: string
+          intake_session_id: string
+          organization_id: string
+          outbound_provider_message_id?: string | null
+          processed_at?: string | null
+          provider_message_id: string
+          received_at: string
+          response_message?: string | null
+          sender_phone: string
+          service_request_id: string
+          source_message_id: string
+          status?: Database["public"]["Enums"]["whatsapp_message_status"]
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          failure_code?: string | null
+          id?: string
+          intake_session_id?: string
+          organization_id?: string
+          outbound_provider_message_id?: string | null
+          processed_at?: string | null
+          provider_message_id?: string
+          received_at?: string
+          response_message?: string | null
+          sender_phone?: string
+          service_request_id?: string
+          source_message_id?: string
+          status?: Database["public"]["Enums"]["whatsapp_message_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_message_events_organization_id_conversation_id_fkey"
+            columns: ["organization_id", "conversation_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_conversations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "whatsapp_message_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_message_events_organization_id_intake_session_id_fkey"
+            columns: ["organization_id", "intake_session_id"]
+            isOneToOne: false
+            referencedRelation: "intake_sessions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "whatsapp_message_events_organization_id_service_request_id_fkey"
+            columns: ["organization_id", "service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "whatsapp_message_events_organization_id_source_message_id_fkey"
+            columns: ["organization_id", "source_message_id"]
+            isOneToOne: false
+            referencedRelation: "intake_messages"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1768,6 +1916,24 @@ export type Database = {
           requested_status: Database["public"]["Enums"]["inbound_email_status"]
           target_event_id: string
         }
+        Returns: undefined
+      }
+      complete_whatsapp_intake: {
+        Args: {
+          requested_correlation_id: string
+          requested_input_tokens: number
+          requested_instructions_version: string
+          requested_latency_ms: number
+          requested_model: string
+          requested_output: Json
+          requested_output_tokens: number
+          requested_provider: string
+          target_event_id: string
+        }
+        Returns: undefined
+      }
+      complete_whatsapp_without_ai: {
+        Args: { requested_response: string; target_event_id: string }
         Returns: undefined
       }
       configure_organization_email_channel: {
@@ -1871,6 +2037,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      fail_whatsapp_message: {
+        Args: { requested_failure_code: string; target_event_id: string }
+        Returns: undefined
+      }
       get_platform_admin_overview: { Args: never; Returns: Json }
       ingest_inbound_email: {
         Args: {
@@ -1893,6 +2063,29 @@ export type Database = {
           organization_id: string
           playbook_version_id: string
           reference_code: string
+          service_request_id: string
+          source_message_id: string
+        }[]
+      }
+      ingest_whatsapp_text_message: {
+        Args: {
+          requested_body: string
+          requested_profile_name: string
+          requested_provider_message_id: string
+          requested_received_at: string
+          requested_sender_phone: string
+          target_organization_id: string
+          target_playbook_version_id: string
+        }
+        Returns: {
+          created: boolean
+          event_id: string
+          event_status: Database["public"]["Enums"]["whatsapp_message_status"]
+          intake_session_id: string
+          locale: string
+          organization_id: string
+          playbook_version_id: string
+          response_message: string
           service_request_id: string
           source_message_id: string
         }[]
@@ -1962,6 +2155,10 @@ export type Database = {
           requested_identifier: string
           target_organization_id: string
         }
+        Returns: undefined
+      }
+      mark_whatsapp_reply_sent: {
+        Args: { requested_provider_message_id: string; target_event_id: string }
         Returns: undefined
       }
       publish_playbook_version: {
@@ -2198,6 +2395,7 @@ export type Database = {
         | "qualified"
         | "routed"
         | "closed"
+      whatsapp_message_status: "processing" | "analyzed" | "replied" | "failed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2439,6 +2637,7 @@ export const Constants = {
         "routed",
         "closed",
       ],
+      whatsapp_message_status: ["processing", "analyzed", "replied", "failed"],
     },
   },
 } as const
