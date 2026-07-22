@@ -16,6 +16,13 @@ const serverEnvSchema = publicEnvSchema.extend({
   RESEND_API_KEY: z.string().startsWith("re_").optional(),
   RESEND_WEBHOOK_SECRET: z.string().min(20).optional(),
   INBOUND_EMAIL_DOMAIN: z.string().regex(/^[a-z0-9.-]+$/).optional(),
+  WHATSAPP_VERIFY_TOKEN: z.string().min(20).optional(),
+  WHATSAPP_APP_SECRET: z.string().min(20).optional(),
+  WHATSAPP_ACCESS_TOKEN: z.string().min(20).optional(),
+  WHATSAPP_PHONE_NUMBER_ID: z.string().regex(/^\d+$/).optional(),
+  WHATSAPP_GRAPH_API_VERSION: z.string().regex(/^v\d+\.\d+$/).optional(),
+  WHATSAPP_PILOT_ORGANIZATION_ID: z.uuid().optional(),
+  WHATSAPP_PILOT_PLAYBOOK_VERSION_ID: z.uuid().optional(),
 });
 
 export type PublicEnv = z.infer<typeof publicEnvSchema>;
@@ -42,5 +49,13 @@ export function getServerEnv(): ServerEnv {
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     RESEND_WEBHOOK_SECRET: process.env.RESEND_WEBHOOK_SECRET,
     INBOUND_EMAIL_DOMAIN: process.env.INBOUND_EMAIL_DOMAIN,
+    WHATSAPP_VERIFY_TOKEN: process.env.WHATSAPP_VERIFY_TOKEN,
+    WHATSAPP_APP_SECRET: process.env.WHATSAPP_APP_SECRET,
+    WHATSAPP_ACCESS_TOKEN: process.env.WHATSAPP_ACCESS_TOKEN,
+    WHATSAPP_PHONE_NUMBER_ID: process.env.WHATSAPP_PHONE_NUMBER_ID,
+    WHATSAPP_GRAPH_API_VERSION: process.env.WHATSAPP_GRAPH_API_VERSION,
+    WHATSAPP_PILOT_ORGANIZATION_ID: process.env.WHATSAPP_PILOT_ORGANIZATION_ID,
+    WHATSAPP_PILOT_PLAYBOOK_VERSION_ID:
+      process.env.WHATSAPP_PILOT_PLAYBOOK_VERSION_ID,
   });
 }
