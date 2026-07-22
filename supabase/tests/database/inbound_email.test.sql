@@ -24,11 +24,13 @@ values('ac000000-0000-0000-0000-000000000001','abcdef0123456789abcdef01','active
 
 set local role service_role;
 select lives_ok($$select public.ingest_inbound_email('abcdef0123456789abcdef01','email-runtime-1','message-runtime-1','client@example.test','abcdef0123456789abcdef01@inbound.example.test','Climatisation en panne','La climatisation ne fonctionne plus depuis ce matin.',now(),0)$$,'service role ingests an email without ambiguous columns');
+reset role;
 select is((select count(*)::integer from public.service_requests where organization_id='ac000000-0000-0000-0000-000000000001'),1,'ingestion creates one organization-scoped dossier');
 select is((select count(*)::integer from public.inbound_email_events where organization_id='ac000000-0000-0000-0000-000000000001'),1,'ingestion records one minimized email event');
+set local role service_role;
 select lives_ok($$select public.ingest_inbound_email('abcdef0123456789abcdef01','email-runtime-1','message-runtime-1','client@example.test','abcdef0123456789abcdef01@inbound.example.test','Climatisation en panne','La climatisation ne fonctionne plus depuis ce matin.',now(),0)$$,'replaying the provider event succeeds');
-select is((select count(*)::integer from public.service_requests where organization_id='ac000000-0000-0000-0000-000000000001'),1,'provider replay remains idempotent');
 reset role;
+select is((select count(*)::integer from public.service_requests where organization_id='ac000000-0000-0000-0000-000000000001'),1,'provider replay remains idempotent');
 
 select * from finish();
 rollback;
