@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(18);
+select plan(29);
 
 select has_table('public','whatsapp_conversations','WhatsApp conversation table exists');
 select has_table('public','whatsapp_message_events','WhatsApp event table exists');
@@ -34,6 +34,17 @@ select lives_ok($$select public.ingest_whatsapp_text_message('bb000000-0000-0000
 select is((select count(*)::integer from public.intake_messages where role='user' and organization_id='bb000000-0000-0000-0000-000000000001'),1,'provider replay does not duplicate the intake message');
 select lives_ok($$select public.ingest_whatsapp_text_message('bb000000-0000-0000-0000-000000000001','be000000-0000-0000-0000-000000000001','wamid.test.2','+33612345678','Alice','Je suis à Lyon.',now())$$,'a second text message is ingested');
 select is((select count(*)::integer from public.service_requests where organization_id='bb000000-0000-0000-0000-000000000001'),1,'same sender reuses the active Dossier');
+select has_table('public','whatsapp_media','WhatsApp media table exists');
+select has_table('public','whatsapp_operational_alerts','WhatsApp operational alerts table exists');
+select ok((select relrowsecurity and relforcerowsecurity from pg_class where oid='public.whatsapp_media'::regclass),'media force RLS');
+select ok((select relrowsecurity and relforcerowsecurity from pg_class where oid='public.whatsapp_operational_alerts'::regclass),'alerts force RLS');
+select is((select public from storage.buckets where id='whatsapp-media'),false,'WhatsApp media bucket is private');
+select function_privs_are('public','register_whatsapp_media',array['uuid','text','text','text','text','text'],'anon',array[]::text[],'anonymous cannot register media');
+select function_privs_are('public','register_whatsapp_media',array['uuid','text','text','text','text','text'],'authenticated',array[]::text[],'authenticated clients cannot register media');
+select function_privs_are('public','register_whatsapp_media',array['uuid','text','text','text','text','text'],'service_role',array['EXECUTE'],'only the server role can register media');
+select lives_ok(format($$select public.register_whatsapp_media('%s','media.test.1','image','image/jpeg','bathroom.jpg','sha256-test')$$,(select id from public.whatsapp_message_events where provider_message_id='wamid.test.2')),'service role registers WhatsApp media');
+select is((select count(*)::integer from public.whatsapp_media where provider_media_id='media.test.1'),1,'media registration creates one private attachment');
+select is((select message_kind from public.whatsapp_message_events where provider_message_id='wamid.test.2'),'image','media registration marks the audit event kind');
 reset role;
 
 select * from finish();

@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   MailCheck,
+  MessageCircleMore,
   Plus,
   Settings2,
   ShieldCheck,
@@ -47,6 +48,7 @@ const navigation = [
   { key: "services", label: "Services", icon: BriefcaseBusiness, suffix: "/services", exact: false },
   { key: "playbooks", label: "Playbooks", icon: BookOpenCheck, suffix: "/playbooks", exact: false },
   { key: "email", label: "Canal email", icon: MailCheck, suffix: "/canaux/email", exact: false },
+  { key: "whatsapp", label: "Canal WhatsApp", icon: MessageCircleMore, suffix: "/canaux/whatsapp", exact: false },
   { key: "team", label: "Équipe", icon: Users, suffix: "/membres", exact: false },
 ] as const;
 
